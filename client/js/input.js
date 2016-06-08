@@ -3,6 +3,17 @@ var MouseX = -1;
 var MouseY = -1;
 var Keys = [];
 
+
+var KEY_CODE = {
+    LEFT: 65,
+    UP: 87,
+    RIGHT: 68,
+    DOWN: 83,
+    PLUS: 107,
+    M: 109,
+    L: 108
+};
+
 function MouseUp(e)
 {
     MouseFlag = false;

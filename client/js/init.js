@@ -2,18 +2,8 @@ var scene;
 var camera;
 var renderer;
 var terrain;
-var plane;
 var light;
-var step = 0;
 
-var KEY_CODE = {
-    LEFT: 65,
-    UP: 87,
-    RIGHT: 68,
-    DOWN: 83,
-    PLUS: 107,
-    MINUS: 109
-};
 
 function InitPlayer() {
     PlayerLook = new THREE.Vector3(0, 0, PlayerSpeed);
@@ -38,6 +28,8 @@ function InitPlayer() {
             object.scale.x = 0.1;
             object.scale.y = 0.1;
             object.scale.z = 0.1;
+            object.position.x = 500;
+            object.position.z = 500;
             Player = object;
             scene.add(Player);
         });
@@ -66,6 +58,8 @@ function InitTerrain() {
             object.scale.y = 0.5;
             object.scale.z = 0.5;
             object.position.y = -20;
+            object.position.x = 750;
+            object.position.z = 900;
             terrain = object;
             scene.add(terrain);
         });
@@ -79,6 +73,7 @@ function Init() {
     window.addEventListener("mousedown", MouseDown);
     window.addEventListener("keyup", KeyUp);
     window.addEventListener("keydown", KeyDown);
+    window.addEventListener("keypress", KeyPress);
     window.addEventListener("wheel", onWheel);
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45
@@ -89,15 +84,8 @@ function Init() {
     renderer.setClearColor(1, 255);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
-    var planeGeometry = new THREE.PlaneGeometry(50, 50, 100, 100);
-    var planeMaterial = new THREE.MeshLambertMaterial(
-        {color: 0xffffff});
-    plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.rotation.x = -Math.PI / 2;
-    plane.receiveShadow = true;
-    scene.add(plane);
 
-    light = new THREE.DirectionalLight(0xffffff, 0.01);
+    light = new THREE.DirectionalLight(0xffffff, 0.2);
     light.position.set(1, 1, 1);
     light.castShadow = false;
     light.shadow.mapSize.width = 1024;    // power of 2
@@ -109,7 +97,7 @@ function Init() {
      */
     scene.add(light);
 
-    PlayerLight = new THREE.SpotLight(0xff0000, 1, 300, 0.5);
+    PlayerLight = new THREE.SpotLight(0xff0000, 1, 300, 0.8);
     PlayerLight.position.set(1, 1, 1);
     PlayerLight.castShadow = false;
     PlayerLight.shadow.mapSize.width = 1024;
