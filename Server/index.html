@@ -3,19 +3,38 @@
 <head>
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script type="text/javascript">
-        function SetUpClient() {
-            var socket = io('http://localhost');
-            socket.on('news', function (data) {
-                console.log(data);
-                socket.emit('my other event', {my: 'data'});
-            });
+        var data = {};
+        var olddata = "";
+        var socket = io('http://localhost:3000');
+
+        function GetMsg() {
+            socket.on('mesg', function (data) {
+                var doc = document.getElementById('ChatWindow').contentWindow.document;
+                doc.open();
+                olddata = olddata + data.UserName + ": "  + data.data + "<br>";
+                doc.write(olddata);
+                doc.close();
+            })
+        }
+
+        function SendMsg() {
+            socket.emit('newmsg', data);
+        }
+
+        function GetData() {
+            data.data = document.getElementById("data").value;
+            data.UserName = document.getElementById("Uname").value;
+            SendMsg();
         }
 
     </script>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body onload="SetUpClient();">
-    <input>
+<body onload="GetMsg();">
+    <iframe id="ChatWindow" width="400" height="300"></iframe>
+    <input type="text" id="Uname" value="Input your uname">
+    <input type="text" id="data">
+    <input type="button" value="send" onclick="GetData();">
 </body>
 </html>
