@@ -14,7 +14,7 @@ function MouseMove(e)
     {
         CamAX += (e.clientX - MouseX) / 100.0;
         CamAY += (e.clientY - MouseY) / 100.0;
-        UpdateCam();
+        UpdateCam(true);
         MouseX = e.clientX;
         MouseY = e.clientY;
     }
@@ -42,6 +42,6 @@ function onWheel(e) {
     // wheelDelta ?? ???? ??????????? ?????? ?????????? ????????
     var delta = e.deltaY || e.detail || e.wheelDelta;
     CamL += delta / 30.0;
-    UpdateCam();
+    UpdateCam(true);
     e.preventDefault ? e.preventDefault() : (e.returnValue = false);
 }
