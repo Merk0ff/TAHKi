@@ -30,13 +30,21 @@ function UpdatePlayerLight() {
     lightHelper.update();
 }
 
+var Debug = true;
+
 function UpdatePosition() {
     var Newposition = Player.position.clone().add(PlayerLook);
 
-    if (Newposition.x > 30 && Newposition.x < 1100)
+    if (!Debug) {
+        if (Newposition.x > 300 && Newposition.x < 900)
+            Player.position.x += PlayerLook.x;
+        if (Newposition.z > 300 && Newposition.z < 900)
+            Player.position.z += PlayerLook.z;
+    }
+    else {
         Player.position.x += PlayerLook.x;
-    if (Newposition.z > 30 && Newposition.z < 1000)
         Player.position.z += PlayerLook.z;
+    }
 
 }
 
