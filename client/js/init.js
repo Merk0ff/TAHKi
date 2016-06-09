@@ -4,7 +4,9 @@ var renderer;
 var terrain;
 var light;
 var cube;
-var collidableMeshList = [];
+var collision_map;
+
+var Player;
 
 function InitSkybox()
 {
@@ -39,39 +41,7 @@ function InitSkybox()
 }
 
 function InitPlayer() {
-    PlayerLook = new THREE.Vector3(0, 0, PlayerSpeed);
-    PlayerRelativeCam = new THREE.Vector3(0, 0, 0);
-    var path = "resources/models/daleks/";
-    var name = "Dalek";
-    NumOfLoadingModels++;
-    var manager = new THREE.LoadingManager();
-    var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.setPath(path);
-    mtlLoader.load(name + ".mtl", function (materials) {
-        materials.preload();
-        var loader = new THREE.OBJLoader(manager);
-        loader.setMaterials(materials);
-        loader.setPath(path);
-        loader.load(name + ".obj", function (object) {
-            object.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.castShadow = true;
-                    child.receiveShadow = true;
-                }
-            });
-            object.scale.x = 0.1;
-            object.scale.y = 0.1;
-            object.scale.z = 0.1;
-            /*
-            object.position.x = 500;
-            object.position.z = 500;
-            */
-            Player = object;
-            scene.add(Player);
-            NumOfLoadingModels--;
-            InitFinish();
-        });
-    });
+    Player = new Dalek();
 }
 
 function InitTerrain() {
@@ -99,10 +69,8 @@ function InitTerrain() {
             object.scale.y = 74;
             object.scale.z = 74;
             object.position.y = -22;
-             /*
-            object.position.x = 750;
-            object.position.z = 900;
-            */
+            object.position.x = 262;
+            object.position.z = 322;
             terrain = object;
             NumOfLoadingModels--;
             scene.add(terrain);
@@ -145,7 +113,6 @@ function Init() {
 
     cube = new THREE.Mesh( new THREE.CubeGeometry( 30, 30, 30 ), new THREE.MeshNormalMaterial());
     scene.add(cube);
-    collidableMeshList.push(cube);
 
     light = new THREE.DirectionalLight(0xffffff, 0.9);
     light.position.set(1, 1, 1);
@@ -157,20 +124,14 @@ function Init() {
      light.shadow.camera.far = 1000;
      light.shadow.camera.fov = 10;
      */
-    scene.add(light);
+    //scene.add(light);
 
-    PlayerLight = new THREE.SpotLight(0xff0000, 1, 300, 0.8, 0.8);
-    PlayerLight.position.set(1, 1, 1);
-    PlayerLight.castShadow = false;
-    PlayerLight.shadow.mapSize.width = 1024;
-    PlayerLight.shadow.mapSize.height = 1024;
-    PlayerLightTarget = new THREE.Object3D();
-    PlayerLightTarget.position = new THREE.Vector3(0, 0, 0);
-    PlayerLight.target = PlayerLightTarget;
-    scene.add(PlayerLight);
-    scene.add(PlayerLightTarget);
-    lightHelper = new THREE.SpotLightHelper(PlayerLight);
-    //scene.add(lightHelper);
+    var imgLoader = new THREE.ImageLoader();
+    imgLoader.load("./resources/models/mineways/scene1/collision_map.png", function(e)
+    {
+        collision_map = getImageData(e);
+    });
+    
     /* light.shadowDarkness = 0.5; */
     $("#canvas").append(renderer.domElement);
     renderScene();
