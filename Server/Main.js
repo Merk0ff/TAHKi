@@ -13,7 +13,7 @@ function ConnectUser() {
         socket.on('newmsg', function (data) {
             socket.emit('msg', data);
         });
-        
+
     });
 }
 
