@@ -39,7 +39,7 @@ function handler (req, res) {
     else if (req.url == '/room')
         SendFile(res, '/room.html');
     else {
-        SendFile(res, '/index.html');
+        SendFile(res, '/Exmpl.html');
         ConnectUser();
     }
 
