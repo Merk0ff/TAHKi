@@ -1,29 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="css/css.css">
-    <script type="text/javascript" src="js/lib/three.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+    <link href='css/css.css' rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="js/lib/jquery.js"></script>
-    <script type="text/javascript" src="js/lib/MTLLoader.js"></script>
-    <script type="text/javascript" src="js/lib/OBJLoader.js"></script>
-    <script type="text/javascript" src="js/lib/glMatrix-0.9.5.min.js"></script>
-    <script type="text/javascript" src="js/init.js"></script>
-    <script type="text/javascript" src="js/anim.js"></script>
-    <script type="text/javascript" src="js/input.js"></script>
-    <script type="text/javascript" src="js/render.js"></script>
-    <script type="text/javascript" src="js/utils.js"></script>
     <script type="text/javascript">
-        $(document).ready(function()
-        {
-            Init();
+        $(document).ready(function () {
+            $("#btn_join_show").click(function () {
+                $("#drop").slideToggle("fast");
+            });
+            $("#btn_start").click(function () {
+
+            });
         });
     </script>
     <meta charset="UTF-8">
-    <title>танкi</title>
+    <title>TAHKi OFFLINE</title>
 </head>
-<body style="margin: 0; overflow: hidden;">
-<div id="canvas">
-    <div id="debug">text</div>
-</div>
+<body>
+<table align="center">
+    <tr>
+        <td>
+            <h1 id="header">TAHKi OFFLINE</h1>
+            <br/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="panel">
+                <p>Enter your nickname:</p>
+                <input type="text"><br>
+                <p>Create room or join</p>
+                <input type="button" class="button" value="Create room">
+                <input type="button" class="button" value="Join room" id="btn_join_show">
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div id="drop" style="display: none;" class="panel">
+                <p>Enter room name:</p>
+                <input type="text" id="txt_room_name"><br>
+                <a href="game.html">
+                    <input type="button" class="button" value="Join" id="btn_start">
+                </a>
+            </div>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

@@ -3,6 +3,8 @@ var camera;
 var renderer;
 var terrain;
 var light;
+var cube;
+var collidableMeshList = [];
 
 function InitSkybox()
 {
@@ -41,6 +43,7 @@ function InitPlayer() {
     PlayerRelativeCam = new THREE.Vector3(0, 0, 0);
     var path = "resources/models/daleks/";
     var name = "Dalek";
+    NumOfLoadingModels++;
     var manager = new THREE.LoadingManager();
     var mtlLoader = new THREE.MTLLoader();
     mtlLoader.setPath(path);
@@ -65,6 +68,8 @@ function InitPlayer() {
             */
             Player = object;
             scene.add(Player);
+            NumOfLoadingModels--;
+            InitFinish();
         });
     });
 }
@@ -74,6 +79,7 @@ function InitTerrain() {
     var name = "scene";
     var manager = new THREE.LoadingManager();
     var mtlLoader = new THREE.MTLLoader();
+    NumOfLoadingModels++;
     mtlLoader.setPath(path);
     mtlLoader.load(name + ".mtl", function (materials) {
         materials.magFilter = THREE.NearestFilter;
@@ -98,13 +104,20 @@ function InitTerrain() {
             object.position.z = 900;
             */
             terrain = object;
+            NumOfLoadingModels--;
             scene.add(terrain);
+            InitFinish();
         });
     });
 }
 
-function Init() {
-    document.body.style.cursor = 'default';
+var NumOfLoadingModels = 0;
+
+function InitFinish()
+{
+    if (NumOfLoadingModels > 0)
+        return;
+
     window.addEventListener("mousemove", MouseMove);
     window.addEventListener("mouseup", MouseUp);
     window.addEventListener("mousedown", MouseDown);
@@ -112,6 +125,13 @@ function Init() {
     window.addEventListener("keydown", KeyDown);
     window.addEventListener("keypress", KeyPress);
     window.addEventListener("wheel", onWheel);
+
+    UpdateCam();
+    $("#splash").fadeOut("slow");
+}
+
+function Init() {
+    document.body.style.cursor = 'default';
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45
         , window.innerWidth / window.innerHeight, 0.1, 10000);
@@ -122,6 +142,10 @@ function Init() {
     renderer.setClearColor(1, 255);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
+
+    cube = new THREE.Mesh( new THREE.CubeGeometry( 30, 30, 30 ), new THREE.MeshNormalMaterial());
+    scene.add(cube);
+    collidableMeshList.push(cube);
 
     light = new THREE.DirectionalLight(0xffffff, 0.9);
     light.position.set(1, 1, 1);

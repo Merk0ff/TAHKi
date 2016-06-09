@@ -35,17 +35,29 @@ var Debug = true;
 function UpdatePosition() {
     var Newposition = Player.position.clone().add(PlayerLook);
 
-    if (!Debug) {
-        if (Newposition.x > 300 && Newposition.x < 900)
-            Player.position.x += PlayerLook.x;
-        if (Newposition.z > 300 && Newposition.z < 900)
-            Player.position.z += PlayerLook.z;
-    }
-    else {
-        Player.position.x += PlayerLook.x;
-        Player.position.z += PlayerLook.z;
-    }
 
+    // collision detection:
+    //   determines if any of the rays from the cube's origin to each vertex
+    //		intersects any face of a mesh in the array of target meshes
+    //   for increased collision accuracy, add more vertices to the cube;
+    //		for example, new THREE.CubeGeometry( 64, 64, 64, 8, 8, 8, wireMaterial )
+    //   HOWEVER: when the origin of the ray is within the target mesh, collisions do not occur
+
+    var rc = new THREE.Raycaster(Player.position, PlayerLook, 0, 10);
+
+    var results = rc.intersectObjects(terrain.children, true);
+    if (results.length < 1)
+        if (!Debug) {
+            if (Newposition.x > 300 && Newposition.x < 900)
+                Player.position.x += PlayerLook.x;
+            if (Newposition.z > 300 && Newposition.z < 900)
+                Player.position.z += PlayerLook.z;
+        }
+        else {
+            Player.position.x += PlayerLook.x;
+            Player.position.z += PlayerLook.z;
+        }
+    $("#debug").html("X:" + Player.position.x + "<br/>Z:" + Player.position.z);
 }
 
 function UpdateKeyboard() {
@@ -88,7 +100,6 @@ function UpdateCam() {
             break;
     }
     UpdatePlayerLight();
-    $("#debug").html("x: " + Player.position.x + "<br/>y: " + Player.position.y + "<br/>z: " + Player.position.z);
     /*
      camera.position.x = CamL * Math.sin(CamAX) * Math.cos(CamAY);
      camera.position.z = CamL * Math.cos(CamAX) * Math.cos(CamAY);
