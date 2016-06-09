@@ -5,10 +5,10 @@
     <script type="text/javascript">
         var data = {};
         var olddata = "";
-        var socket = io('http://localhost:3000');
+        var socket = io('http://localhost:8000');
 
         function GetMsg() {
-            socket.on('mesg', function (data) {
+            socket.on('msg', function (data) {
                 var doc = document.getElementById('ChatWindow').contentWindow.document;
                 doc.open();
                 olddata = olddata + data.UserName + ": "  + data.data + "<br>";
@@ -37,4 +37,4 @@
     <input type="text" id="data">
     <input type="button" value="send" onclick="GetData();">
 </body>
-</html>
+</html
