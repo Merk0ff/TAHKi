@@ -117,7 +117,6 @@ function InitFinish()
 {
     if (NumOfLoadingModels > 0)
         return;
-
     window.addEventListener("mousemove", MouseMove);
     window.addEventListener("mouseup", MouseUp);
     window.addEventListener("mousedown", MouseDown);
@@ -125,7 +124,6 @@ function InitFinish()
     window.addEventListener("keydown", KeyDown);
     window.addEventListener("keypress", KeyPress);
     window.addEventListener("wheel", onWheel);
-
     UpdateCam();
     $("#splash").fadeOut("slow");
 }
