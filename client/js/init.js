@@ -5,8 +5,44 @@ var terrain;
 var light;
 var cube;
 var collision_map;
+var stats;
+
+var model_friendly;
+var model_enemy;
+var model_bull;
 
 var Player;
+var Friend;
+
+function InitModels()
+{
+    var path = "resources/models/daleks/friendly/";
+    var name = "Dalek";
+    NumOfLoadingModels++;
+    var manager = new THREE.LoadingManager();
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.setPath(path);
+    mtlLoader.load(name + ".mtl", function (materials) {
+        materials.preload();
+        var loader = new THREE.OBJLoader(manager);
+        loader.setMaterials(materials);
+        loader.setPath(path);
+        loader.load(name + ".obj", function (object) {
+            object.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+            object.scale.x = 0.1;
+            object.scale.y = 0.1;
+            object.scale.z = 0.1;
+            NumOfLoadingModels--;
+            model_friendly = object;
+            InitFinish();
+        });
+    });
+}
 
 function InitSkybox()
 {
@@ -41,7 +77,11 @@ function InitSkybox()
 }
 
 function InitPlayer() {
-    Player = new Dalek();
+    Player = new Dalek("friendly");
+    Player.SetPosition(VecSet2(86, 570));
+
+    Friend = new Dalek("friendly");
+    Friend.SetPosition(VecSet2(220, 450));
 }
 
 function InitTerrain() {
@@ -92,16 +132,21 @@ function InitFinish()
     window.addEventListener("keydown", KeyDown);
     window.addEventListener("keypress", KeyPress);
     window.addEventListener("wheel", onWheel);
-    UpdateCam();
+    InitPlayer();
+    Player.SetCamera();
+    renderScene();
     $("#splash").fadeOut("slow");
 }
 
 function Init() {
+    stats = new Stats();
+    stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild( stats.dom );
     document.body.style.cursor = 'default';
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45
         , window.innerWidth / window.innerHeight, 0.1, 10000);
-    InitPlayer();
+    InitModels();
     InitTerrain();
     InitSkybox();
     renderer = new THREE.WebGLRenderer();
@@ -122,7 +167,7 @@ function Init() {
      light.shadow.camera.far = 1000;
      light.shadow.camera.fov = 10;
      */
-    //scene.add(light);
+    scene.add(light);
 
     var imgLoader = new THREE.ImageLoader();
     imgLoader.load("./resources/models/mineways/scene1/collision_map.png", function(e)
@@ -132,5 +177,4 @@ function Init() {
     
     /* light.shadowDarkness = 0.5; */
     $("#canvas").append(renderer.domElement);
-    renderScene();
 }

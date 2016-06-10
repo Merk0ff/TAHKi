@@ -1,6 +1,5 @@
 /* Constructor */
-function Dalek() {
-        /* Player Model */
+function Dalek(type) {
     this.Speed = 1;
     this.Look = new THREE.Vector3(0, 0, this.Speed);
     this.RelativeCam = new THREE.Vector3(0, 0, 0);
@@ -13,49 +12,68 @@ function Dalek() {
     this.LightTarget.position = new THREE.Vector3(0, 0, 0);
     this.Light.target = this.LightTarget;
     this.LightHelper = new THREE.SpotLightHelper(this.Light);
+    if (type == "friendly")
+        this.Model = model_friendly.clone();
+    scene.add(this.Model);
     scene.add(this.Light);
     scene.add(this.LightTarget);
     //scene.add(this.LightHelper);
-    
-    var path = "resources/models/daleks/";
-    var name = "Dalek";
-    NumOfLoadingModels++;
-    var manager = new THREE.LoadingManager();
-    var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.setPath(path);
-    mtlLoader.load(name + ".mtl", function (materials) {
-        materials.preload();
-        var loader = new THREE.OBJLoader(manager);
-        loader.setMaterials(materials);
-        loader.setPath(path);
-        loader.load(name + ".obj", function (object) {
-            object.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.castShadow = true;
-                    child.receiveShadow = true;
-                }
-            });
-            object.scale.x = 0.1;
-            object.scale.y = 0.1;
-            object.scale.z = 0.1;
-            object.position.x = 86;
-            object.position.z = 570;
-            NumOfLoadingModels--;
-            Player.Model = object;
-            InitFinish();
-            scene.add(Player.Model);
-        });
-    });    
 }
 
-/* Funcitons */
-Dalek.prototype.run = function(speed)
-{
-    //this.speed += speed;
-    alert( this.name + ' бежит, скорость ' + this.speed );
+Dalek.prototype.SetPosition = function (new_position) {
+    this.Model.position.x = new_position.x;
+    this.Model.position.z = new_position.y;
 };
 
-Dalek.prototype.stop = function() {
-    //this.speed = 0;
-    alert( this.name + ' стоит' );
+Dalek.prototype.SetCamera = function () {
+    switch (CameraMode) {
+        case 0:
+            this.RelativeCam.x = -this.Look.x;
+            this.RelativeCam.z = -this.Look.z;
+            this.RelativeCam.y = CamAY;
+            this.RelativeCam.multiplyScalar(CamL);
+            camera.position.copy(this.Model.position.clone().add(this.RelativeCam));
+            camera.lookAt(this.Model.position.clone().add(new THREE.Vector3(0, 10, 0)));
+            break;
+        case 1:
+            this.RelativeCam.x = this.Look.x * 0.2;
+            this.RelativeCam.z = this.Look.z * 0.2;
+            this.RelativeCam.y = 18;
+            //this.RelativeCam.multiplyScalar(CamL);
+            camera.position.copy(this.Model.position.clone().add(this.RelativeCam));
+            camera.lookAt(camera.position.clone().add(this.Look));
+            break;
+    }
+};
+
+Dalek.prototype.Rotate = function (angle) {
+    this.Model.rotation.y += angle;
+    this.Look.x = this.Speed * Math.sin(this.Model.rotation.y);
+    this.Look.z = this.Speed * Math.cos(this.Model.rotation.y);
+};
+
+Dalek.prototype.Update = function () {
+    this.Light.position.copy(this.Model.position.clone().add(new THREE.Vector3(this.Look.x * 5, 17, 5 * this.Look.z)));
+    this.LightTarget.position.copy(this.Light.position.clone().add(this.Look));
+    this.LightHelper.update();
+};
+
+Dalek.prototype.SetLight = function(state)
+{
+    this.Light.visible = state;
+};
+
+Dalek.prototype.ToggleLight = function()
+{
+    this.Light.visible = !this.Light.visible;
+};
+
+/* Funcitons */
+Dalek.prototype.Move = function () {
+    var Newposition = this.Model.position.clone().add(this.Look);
+    if (DetectCollision(collision_map, 5, Newposition.x, this.Model.position.z))
+        this.Model.position.x += this.Look.x;
+    if (DetectCollision(collision_map, 5, this.Model.position.x, Newposition.z))
+        this.Model.position.z += this.Look.z;
+    $("#debug").html("X:" + this.Model.position.x + "<br/>Z:" + this.Model.position.z);
 };

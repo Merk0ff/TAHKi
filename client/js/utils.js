@@ -8,6 +8,15 @@ function fopen(FileName)
     return str;
 }
 
+function VecSet2(x, y)
+{
+    return new THREE.Vector2(x, y);
+}
+
+function VecSet3(x, y, z)
+{
+    return new THREE.Vector3(x, y, z);
+}
 
 function LoadModel(path, name)
 {
