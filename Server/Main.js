@@ -11,27 +11,34 @@ function getRandomArbitary(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-
-function NewRoom(socket) {
-    var RoomId = getRandomArbitary(400, 30000);
-
-    socket.join(RoomId);
-    socket.emit('NewRoomId', RoomId);
-}
-
-function JoinRoom(data, socket) {
+function AddNewUser(data) {
     var send = {
         userid: data.userid,
         userServerId: UserCounter
     };
 
-    socket.join(data.roomid);
     Users[UserCounter] = {
         id: data.id,
         team: data.team,
         roomid: data.roomid
     };
-    socket.in(data.roomid).emit('NewRoomUser', send);
+
+    UserCounter++;
+
+    return send;
+}
+
+function NewRoom(socket) {
+    var RoomId = getRandomArbitary(400, 30000);
+
+    socket.emit('NewRoomId', RoomId);
+}
+
+function JoinRoom(data, socket) {
+    var send = AddNewUser(data);
+    socket.join(data.roomid);
+
+    socket.in(data.roomid).broadcast.emit('NewRoomUser', send);
 }
 
 function ConnectUser() {
@@ -66,7 +73,7 @@ function handler(req, res) {
     else if (req.url == '/room')
         SendFile(res, '/room.html');
     else {
-        SendFile(res, '/Exmpl.html');
+        SendFile(res, '/index.html');
         ConnectUser();
     }
 
