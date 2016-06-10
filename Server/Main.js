@@ -48,6 +48,14 @@ function ConnectUser() {
 
             io.sockets.in(data.roomid.toString()).emit('BackNewRoomUser', send);
         });
+
+        socket.on('JoinTeam', function (data) {
+            Users[data.userServerId].team = data.team;
+
+            io.sockets.in(data.roomid.toString()).emit('socket.on', {team: data.team});
+
+            
+        });
     });
 }
 
