@@ -5,15 +5,42 @@
 var app;
 var io;
 
+var Users = [], UserCounter;
+
+function getRandomArbitary(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+
+function NewRoom(socket) {
+    var RoomId = getRandomArbitary(400, 30000);
+
+    socket.join(RoomId);
+    socket.emit('NewRoomId', RoomId);
+}
+
+function JoinRoom(data, socket) {
+    var send = {
+        userid: data.userid,
+        userServerId: UserCounter
+    };
+
+    socket.join(data.roomid);
+    Users[UserCounter] = {
+        id: data.id,
+        team: data.team,
+        roomid: data.roomid
+    };
+    socket.in(data.roomid).emit('NewRoomUser', send);
+}
+
 function ConnectUser() {
     io.on('connection', function (socket) {
         var address = socket.request.connection.remoteAddress;
 
         console.log('New connection from ' + address);
-        socket.on('newmsg', function (data) {
-            socket.emit('msg', data);
-        });
-
+        socket.on('NewRoom', NewRoom(socket));
+        socket.on('JoinRoom', JoinRoom(data, socket));
     });
 }
 
@@ -31,8 +58,8 @@ function SendFile(res, path) {
         });
 }
 
-function handler (req, res) {
-    if (req.url == '/game'){
+function handler(req, res) {
+    if (req.url == '/game') {
         ConnectUser();
         SendFile(res, '/game.html');
     }
@@ -47,7 +74,7 @@ function handler (req, res) {
 
 function SetUpServer() {
     app = require('http').createServer(handler);
-    io  = require('socket.io')(app);
+    io = require('socket.io')(app);
     app.listen(8000);
 }
 
