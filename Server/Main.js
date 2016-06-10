@@ -4,8 +4,9 @@
 
 var app;
 var io;
+var http;
 
-var Users = [], UserCounter;
+var Users = [], UserCounter = 0;
 
 function getRandomArbitary(min, max) {
     return Math.random() * (max - min) + min;
@@ -18,7 +19,7 @@ function AddNewUser(data) {
     };
 
     Users[UserCounter] = {
-        id: data.id,
+        userid: data.userid,
         team: data.team,
         roomid: data.roomid
     };
@@ -28,33 +29,33 @@ function AddNewUser(data) {
     return send;
 }
 
-function NewRoom(socket) {
-    var RoomId = getRandomArbitary(400, 30000);
-
-    socket.emit('NewRoomId', RoomId);
-}
-
-function JoinRoom(data, socket) {
-    var send = AddNewUser(data);
-    socket.join(data.roomid);
-
-    socket.in(data.roomid).broadcast.emit('NewRoomUser', send);
-}
-
 function ConnectUser() {
     io.on('connection', function (socket) {
         var address = socket.request.connection.remoteAddress;
 
         console.log('New connection from ' + address);
-        socket.on('NewRoom', NewRoom(socket));
-        socket.on('JoinRoom', JoinRoom(data, socket));
+
+        // Crate new room callback
+        socket.on('NewRoom', function (data) {
+            var RoomId = getRandomArbitary(400, 30000);
+
+            socket.emit('BackNewRoomId', RoomId);
+        });
+
+        // Join room callback
+        socket.on('JoinRoom', function (data) {
+            var send = AddNewUser(data);
+            socket.join(data.roomid);
+
+            socket.in(data.roomid).emit('BackNewRoomUser', send);
+        });
     });
 }
 
 function SendFile(res, path) {
     var fs = require('fs');
 
-    fs.readFile(__dirname + path,
+    fs.readFile('../client' + path,
         function (err, data) {
             if (err) {
                 res.writeHead(500);
@@ -65,24 +66,30 @@ function SendFile(res, path) {
         });
 }
 
-function handler(req, res) {
-    if (req.url == '/game') {
-        ConnectUser();
-        SendFile(res, '/game.html');
-    }
-    else if (req.url == '/room')
-        SendFile(res, '/room.html');
-    else {
+function Serverhandler() {
+    app.get('/', function (req, res) {
         SendFile(res, '/index.html');
         ConnectUser();
-    }
+    });
+
+    app.get('/game', function (req, res) {
+        SendFile(res, '/game.html');
+    });
 
 }
 
 function SetUpServer() {
-    app = require('http').createServer(handler);
-    io = require('socket.io')(app);
-    app.listen(8000);
+    var exp = require('express');
+    app = exp();
+    http = require('http').Server(app);
+    io = require('socket.io')(http);
+
+    Serverhandler();
+    app.use(exp.static('../client'));
+
+    http.listen(3000, function () {
+        console.log('listening on *:3000');
+    });
 }
 
 function Main() {

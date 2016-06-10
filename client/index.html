@@ -3,14 +3,17 @@
 <head>
     <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     <link href='css/css.css' rel='stylesheet' type='text/css'>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="js/conection.js"></script>
     <script type="text/javascript" src="js/lib/jquery.js"></script>
     <script type="text/javascript">
+        var socket = io('http://localhost:3000');
         $(document).ready(function () {
             $("#btn_join_show").click(function () {
+                Join();
                 $("#drop").slideToggle("fast");
             });
             $("#btn_start").click(function () {
-
             });
         });
     </script>
