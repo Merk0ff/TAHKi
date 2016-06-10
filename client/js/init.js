@@ -14,8 +14,7 @@ var model_bull;
 var Player;
 var Friend;
 
-function InitModels()
-{
+function InitModels() {
     var path = "resources/models/daleks/friendly/";
     var name = "Dalek";
     NumOfLoadingModels++;
@@ -58,8 +57,7 @@ function InitModels()
     model_bull.position.y = 17;
 }
 
-function InitSkybox()
-{
+function InitSkybox() {
     var urls = [
         'xpos',
         'xneg',
@@ -68,8 +66,7 @@ function InitSkybox()
         'zpos',
         'zneg'
     ];
-    for (var i  = 0; i < 6; i++)
-    {
+    for (var i = 0; i < 6; i++) {
         urls[i] = "././resources/textures/skybox/" + urls[i] + ".png";
     }
     var loader = new THREE.CubeTextureLoader();
@@ -77,7 +74,7 @@ function InitSkybox()
     cubemap.format = THREE.RGBFormat;
     var shader = THREE.ShaderLib['cube'];
     shader.uniforms['tCube'].value = cubemap;
-    var skyBoxMaterial = new THREE.ShaderMaterial( {
+    var skyBoxMaterial = new THREE.ShaderMaterial({
         fragmentShader: shader.fragmentShader,
         vertexShader: shader.vertexShader,
         uniforms: shader.uniforms,
@@ -138,8 +135,7 @@ function InitTerrain() {
 
 var NumOfLoadingModels = 0;
 
-function InitFinish()
-{
+function InitFinish() {
     if (NumOfLoadingModels > 0)
         return;
     window.addEventListener("mousemove", MouseMove);
@@ -157,8 +153,8 @@ function InitFinish()
 
 function Init() {
     stats = new Stats();
-    stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-    document.body.appendChild( stats.dom );
+    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(stats.dom);
     document.body.style.cursor = 'default';
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45
@@ -168,7 +164,7 @@ function Init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
 
-    cube = new THREE.Mesh( new THREE.CubeGeometry( 30, 30, 30 ), new THREE.MeshNormalMaterial());
+    cube = new THREE.Mesh(new THREE.CubeGeometry(30, 30, 30), new THREE.MeshNormalMaterial());
     //scene.add(cube);
 
     light = new THREE.DirectionalLight(0xffffff, 0.9);
@@ -184,8 +180,7 @@ function Init() {
     scene.add(light);
 
     var imgLoader = new THREE.ImageLoader();
-    imgLoader.load("./resources/models/mineways/scene1/collision_map.png", function(e)
-    {
+    imgLoader.load("./resources/models/mineways/scene1/collision_map.png", function (e) {
         collision_map = getImageData(e);
     });
 

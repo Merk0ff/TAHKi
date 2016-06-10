@@ -8,6 +8,11 @@ function GetData() {
     
     socket.on('BackNewRoomId', function (backdata) {
         data.roomid = backdata;
+        $("#RoomIdLabel").text("Your room name");
+        $("#RoomId").val(data.roomid.toString());
+        $("#RoomId").attr("readonly", "readonly");
+        $("#drop").slideDown("fast");
+        JoinRoom($("#RoomId").val(), data.roomid);
     });
 }
 
@@ -20,4 +25,5 @@ function JoinRoom(nick, roomid) {
     data.roomid = roomid;
     
     socket.emit('JoinRoom', data);
+    $("#teams").show("fast");
 }

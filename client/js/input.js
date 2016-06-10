@@ -37,6 +37,7 @@ function MouseDown(e)
     MouseFlag = true;
     MouseX = e.clientX;
     MouseY = e.clientY;
+    return false;
 }
 
 function KeyDown(e)

@@ -4,8 +4,10 @@ function Bullet(position, direction)
     this.Model = model_bull.clone();
     this.Model.position.x = position.x;
     this.Model.position.z = position.y;
+    this.Model.castShadow = false;
     this.Light = new THREE.PointLight(0xff0000, 2, 30);
     this.Light.position.copy(this.Model.position);
+    this.Light.castShadow = false;
     scene.add(this.Light);
     scene.add(this.Model);
 };

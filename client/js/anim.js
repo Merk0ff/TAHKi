@@ -14,7 +14,7 @@ function KeyPress(e) {
             Player.ToggleLight();
             break;
         case KEY_CODE.SPACE:
-            BulletLaunch(VecSet2(Player.Model.position.x, Player.Model.position.z), VecSet2(Player.Look.x * 20, Player.Look.z * 20));
+            BulletLaunch(VecSet2(Player.Model.position.x, Player.Model.position.z), VecSet2(Player.Look.x, Player.Look.z));
             break;
     }
 }

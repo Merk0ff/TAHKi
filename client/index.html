@@ -10,15 +10,21 @@
         var socket = io('http://localhost:3000');
         var data = {};
 
+        /* Mouse selection fix */
+        $("input[type='text']").click(function () {
+            $(this).select();
+        });
+
         $(document).ready(function () {
+            $("#mainTable").slideDown("slow");
+            $("#mainTable").css("align", "center");
+
             $("#btn_join_show").click(function () {
                 $("#drop").slideToggle("fast");
             });
 
             $("#btn_start").click(function () {
                 JoinRoom($("#Nick").val(), $("#RoomId").val());
-                //$("#slide").show("slide", { direction: "left" }, 1000);
-                $("#teams").toggle("slide");
             });
 
             $("#CreateRoom").click(function () {
@@ -34,10 +40,10 @@
 <table align="center">
     <tr>
         <td>
-            <table align="center" style="vertical-align: top">
+            <table>
                 <tr>
                     <td>
-                        <div class="panel">
+                        <div class="panel" id="mainTable" style="display: none;">
                             <p>Enter your nickname:</p>
                             <input type="text" id="Nick"><br>
                             <p>Create room or join</p>
@@ -49,32 +55,38 @@
                 <tr>
                     <td>
                         <div id="drop" style="display: none;" class="panel">
-                            <p>Enter room name:</p>
-                            <input type="text" id="RoomId"><br>
+                            <p id="RoomIdLabel">Enter room name:</p>
+                            <input type="text" id="RoomId">
                             <input type="button" class="button" value="Join" id="btn_start">
                         </div>
                     </td>
                 </tr>
             </table>
         </td>
-        <td style="height: 100%">
-            <div id="teams" style="display: none;" class="panel" align="center">
-                <ul id="team1" class="">
-                    <li>1</li>
-                    <li>2</li>
-                    <li>3</li>
-                    <li>4</li>
-                    <li>5</li>
-                </ul>
-                <ul id="team2" class="">
-                    <li>1</li>
-                    <li>2</li>
-                    <li>3</li>
-                    <li>4</li>
-                    <li>5</li>
-                </ul>
-                <input type="button" class="button" value="Start game" id="Start">
-            </div>
+        <td>
+            <table align="center" style="height: 100%">
+                <tr>
+                    <td>
+                        <div id="teams" style="display: none; padding-top: 20px" class="panel" align="center">
+                            <ul id="team1" class="">
+                                <li>1</li>
+                                <li>2</li>
+                                <li>3</li>
+                                <li>4</li>
+                                <li>5</li>
+                            </ul>
+                            <ul id="team2" class="">
+                                <li>1</li>
+                                <li>2</li>
+                                <li>3</li>
+                                <li>4</li>
+                                <li>5</li>
+                            </ul>
+                            <a href="game.html"><input type="button" class="button" value="Start game" id="Start"></a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
 </table>
