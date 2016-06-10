@@ -3,6 +3,7 @@ function GetData() {
     socket.on('BackNewRoomUser', function (backdata) {
         data.userid = backdata.userid;
         data.userServerId = backdata.userServerId;
+        /*****/
     });
     
     socket.on('BackNewRoomId', function (backdata) {
