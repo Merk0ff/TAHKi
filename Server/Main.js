@@ -9,7 +9,7 @@ var http;
 var Users = [], UserCounter = 0;
 
 function getRandomArbitary(min, max) {
-    return Math.random() * (max - min) + min;
+    return Math.round(Math.random() * (max - min) + min);
 }
 
 function AddNewUser(data) {
@@ -20,7 +20,6 @@ function AddNewUser(data) {
 
     Users[UserCounter] = {
         userid: data.userid,
-        team: data.team,
         roomid: data.roomid
     };
 
@@ -45,9 +44,9 @@ function ConnectUser() {
         // Join room callback
         socket.on('JoinRoom', function (data) {
             var send = AddNewUser(data);
-            socket.join(data.roomid);
+            socket.join(data.roomid.toString());
 
-            socket.in(data.roomid).emit('BackNewRoomUser', send);
+            io.sockets.in(data.roomid.toString()).emit('BackNewRoomUser', send);
         });
     });
 }

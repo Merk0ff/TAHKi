@@ -8,19 +8,26 @@
     <script type="text/javascript" src="js/lib/jquery.js"></script>
     <script type="text/javascript">
         var socket = io('http://localhost:3000');
+        var data = {};
+
         $(document).ready(function () {
             $("#btn_join_show").click(function () {
-                Join();
                 $("#drop").slideToggle("fast");
             });
+
             $("#btn_start").click(function () {
+                JoinRoom($("#Nick").val(), $("#RoomId").val());
+            });
+
+            $("#CreateRoom").click(function () {
+                CreateRoom();
             });
         });
     </script>
     <meta charset="UTF-8">
     <title>TAHKi OFFLINE</title>
 </head>
-<body>
+<body onload="GetData()">
 <table align="center">
     <tr>
         <td>
@@ -32,9 +39,9 @@
         <td>
             <div class="panel">
                 <p>Enter your nickname:</p>
-                <input type="text"><br>
+                <input type="text" id="Nick"><br>
                 <p>Create room or join</p>
-                <input type="button" class="button" value="Create room">
+                <input type="button" class="button" id="CreateRoom" value="Create room">
                 <input type="button" class="button" value="Join room" id="btn_join_show">
             </div>
         </td>
@@ -43,10 +50,8 @@
         <td>
             <div id="drop" style="display: none;" class="panel">
                 <p>Enter room name:</p>
-                <input type="text" id="txt_room_name"><br>
-                <a href="game.html">
+                <input type="text" id="RoomId"><br>
                     <input type="button" class="button" value="Join" id="btn_start">
-                </a>
             </div>
         </td>
     </tr>
