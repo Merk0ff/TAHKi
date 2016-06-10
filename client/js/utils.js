@@ -59,6 +59,12 @@ function getPixel( imagedata, x, y ) {
 
 }
 
+function DetectSimpleCollision( map, x, y ) {
+    var color = getPixel(map, Math.round(x / 7.4), Math.round(y / 7.4));
+    if (color.r == 0)
+        return false;
+    return true;
+}
 function DetectCollision( map, size, x, y )
 {
     var color = getPixel(map, Math.round((x + size) / 7.4), Math.round(y / 7.4));

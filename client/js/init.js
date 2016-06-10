@@ -42,6 +42,20 @@ function InitModels()
             InitFinish();
         });
     });
+
+    var sphereMaterial =
+        new THREE.MeshBasicMaterial(
+            {
+                color: 0xCC0000
+            });
+
+    model_bull = new THREE.Mesh(
+        new THREE.SphereGeometry(
+            0.59,
+            5,
+            5),
+        sphereMaterial);
+    model_bull.position.y = 17;
 }
 
 function InitSkybox()
@@ -58,7 +72,8 @@ function InitSkybox()
     {
         urls[i] = "././resources/textures/skybox/" + urls[i] + ".png";
     }
-    var cubemap = THREE.ImageUtils.loadTextureCube(urls); // load textures
+    var loader = new THREE.CubeTextureLoader();
+    var cubemap = loader.load(urls);
     cubemap.format = THREE.RGBFormat;
     var shader = THREE.ShaderLib['cube'];
     shader.uniforms['tCube'].value = cubemap;
@@ -79,6 +94,8 @@ function InitSkybox()
 function InitPlayer() {
     Player = new Dalek("friendly");
     Player.SetPosition(VecSet2(86, 570));
+
+    //EntityAdd(new Bullet(VecSet2(86, 570), VecSet2(1, 0)));
 
     Friend = new Dalek("friendly");
     Friend.SetPosition(VecSet2(220, 450));
@@ -146,16 +163,13 @@ function Init() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45
         , window.innerWidth / window.innerHeight, 0.1, 10000);
-    InitModels();
-    InitTerrain();
-    InitSkybox();
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(1, 255);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
 
     cube = new THREE.Mesh( new THREE.CubeGeometry( 30, 30, 30 ), new THREE.MeshNormalMaterial());
-    scene.add(cube);
+    //scene.add(cube);
 
     light = new THREE.DirectionalLight(0xffffff, 0.9);
     light.position.set(1, 1, 1);
@@ -174,7 +188,11 @@ function Init() {
     {
         collision_map = getImageData(e);
     });
-    
+
+    InitModels();
+    InitTerrain();
+    InitSkybox();
+
     /* light.shadowDarkness = 0.5; */
     $("#canvas").append(renderer.domElement);
 }

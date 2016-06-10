@@ -13,6 +13,9 @@ function KeyPress(e) {
         case KEY_CODE.L:
             Player.ToggleLight();
             break;
+        case KEY_CODE.SPACE:
+            BulletLaunch(VecSet2(Player.Model.position.x, Player.Model.position.z), VecSet2(Player.Look.x * 20, Player.Look.z * 20));
+            break;
     }
 }
 
@@ -39,8 +42,18 @@ function UpdateKeyboard()
 }
 
 function Update() {
+    for (var i = 0; i < Entities.length; i++)
+    {
+        if (Entities[i] != undefined) {
+            Entities[i].Update();
+            if (!Entities[i].IsAlive()) {
+                Entities[i].Destroy();
+                EntityRemove(i);
+            }
+        }
+    }
     UpdateKeyboard();
     Player.Update();
-    Friend.Update();
+    //Friend.Update();
     //UpdateCam();
 }

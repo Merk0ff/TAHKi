@@ -11,7 +11,8 @@ var KEY_CODE = {
     DOWN: 83,
     PLUS: 107,
     M: 109,
-    L: 108
+    L: 108,
+    SPACE: 32
 };
 
 function MouseUp(e)
