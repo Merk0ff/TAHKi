@@ -24,6 +24,14 @@ body {
     padding: 0;
 }
 
+li{
+    margin: 1px;
+    border: 1px solid #cc1488;
+    text-shadow: #cc1488 1px 1px 0, #cc1488 2px 2px 0,
+    #cc1488 3px 3px 0, #cc1488 4px 4px 0,
+    #cc1488 5px 5px 0;
+}
+
 .panel {
     display: inline-block;
     width: 500px;

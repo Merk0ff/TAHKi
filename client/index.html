@@ -17,6 +17,8 @@
 
             $("#btn_start").click(function () {
                 JoinRoom($("#Nick").val(), $("#RoomId").val());
+                //$("#slide").show("slide", { direction: "left" }, 1000);
+                $("#teams").toggle("slide");
             });
 
             $("#CreateRoom").click(function () {
@@ -28,30 +30,50 @@
     <title>TAHKi OFFLINE</title>
 </head>
 <body onload="GetData()">
+<h1 id="header" align="center">TAHKi OFFLINE</h1>
 <table align="center">
     <tr>
         <td>
-            <h1 id="header">TAHKi OFFLINE</h1>
-            <br/>
+            <table align="center" style="vertical-align: top">
+                <tr>
+                    <td>
+                        <div class="panel">
+                            <p>Enter your nickname:</p>
+                            <input type="text" id="Nick"><br>
+                            <p>Create room or join</p>
+                            <input type="button" class="button" id="CreateRoom" value="Create room">
+                            <input type="button" class="button" value="Join room" id="btn_join_show">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="drop" style="display: none;" class="panel">
+                            <p>Enter room name:</p>
+                            <input type="text" id="RoomId"><br>
+                            <input type="button" class="button" value="Join" id="btn_start">
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </td>
-    </tr>
-    <tr>
-        <td>
-            <div class="panel">
-                <p>Enter your nickname:</p>
-                <input type="text" id="Nick"><br>
-                <p>Create room or join</p>
-                <input type="button" class="button" id="CreateRoom" value="Create room">
-                <input type="button" class="button" value="Join room" id="btn_join_show">
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <div id="drop" style="display: none;" class="panel">
-                <p>Enter room name:</p>
-                <input type="text" id="RoomId"><br>
-                    <input type="button" class="button" value="Join" id="btn_start">
+        <td style="height: 100%">
+            <div id="teams" style="display: none;" class="panel" align="center">
+                <ul id="team1" class="">
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                </ul>
+                <ul id="team2" class="">
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li>
+                </ul>
+                <input type="button" class="button" value="Start game" id="Start">
             </div>
         </td>
     </tr>
