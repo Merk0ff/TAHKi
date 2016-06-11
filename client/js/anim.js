@@ -8,13 +8,13 @@ function KeyPress(e) {
     switch (e.keyCode) {
         case KEY_CODE.M:
             CameraMode ^= 1;
-            Player.SetCamera();
+            players[mydata.userid].SetCamera();
             break;
         case KEY_CODE.L:
-            Player.ToggleLight();
+            players[mydata.userid].ToggleLight();
             break;
         case KEY_CODE.SPACE:
-            BulletLaunch(VecSet2(Player.Model.position.x, Player.Model.position.z), VecSet2(Player.Look.x, Player.Look.z));
+            BulletLaunch(VecSet2(Player.Model.position.x, players[mydata.userid].Model.position.z), VecSet2(players[mydata.userid].Look.x, players[mydata.userid].Look.z));
             break;
     }
 }
@@ -22,22 +22,22 @@ function KeyPress(e) {
 function UpdateKeyboard()
 {
     if (Keys[KEY_CODE.UP]) {
-        Player.Move();
-        Player.SetCamera();
+        players[mydata.userid].Move();
+        players[mydata.userid].SetCamera();
     }
     if (Keys[KEY_CODE.DOWN]) {
-        Player.Look.negate();
-        Player.Move();
-        Player.Look.negate();
-        Player.SetCamera();
+        players[mydata.userid].Look.negate();
+        players[mydata.userid].Move();
+        players[mydata.userid].Look.negate();
+        players[mydata.userid].SetCamera();
     }
     if (Keys[KEY_CODE.RIGHT]) {
-        Player.Rotate(-0.030);
-        Player.SetCamera();
+        players[mydata.userid].Rotate(-0.030);
+        players[mydata.userid].SetCamera();
     }
     if (Keys[KEY_CODE.LEFT]) {
-        Player.Rotate(0.030);
-        Player.SetCamera();
+        players[mydata.userid].Rotate(0.030);
+        players[mydata.userid].SetCamera();
     }
 }
 
@@ -53,7 +53,8 @@ function Update() {
         }
     }
     UpdateKeyboard();
-    Player.Update();
+    players[mydata.userid].Update();
+    Response();
     //Friend.Update();
     //UpdateCam();
 }

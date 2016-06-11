@@ -12,8 +12,8 @@ function Dalek(type) {
     this.LightTarget.position = new THREE.Vector3(0, 0, 0);
     this.Light.target = this.LightTarget;
     this.LightHelper = new THREE.SpotLightHelper(this.Light);
-    if (type == "friendly")
-        this.Model = model_friendly.clone();
+    if (type == "red")
+        this.Model = model_red.clone();
     scene.add(this.Model);
     scene.add(this.Light);
     scene.add(this.LightTarget);
@@ -23,6 +23,10 @@ function Dalek(type) {
 Dalek.prototype.SetPosition = function (new_position) {
     this.Model.position.x = new_position.x;
     this.Model.position.z = new_position.y;
+};
+
+Dalek.prototype.GetPosition = function () {
+    return VecSet2(this.Model.position.x, this.Model.position.z);
 };
 
 Dalek.prototype.SetCamera = function () {

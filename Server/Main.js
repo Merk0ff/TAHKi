@@ -97,18 +97,18 @@ function ConnectUser() {
 
         // Start game handle
         socket.on('StartGame', function (data) {
-            for (var i = 0; i < Rooms[data.roomid].users[i]; i++)
+            for (var i = 0; i < Rooms[data.roomid].userCounter; i++)
                 if (Rooms[data.roomid].users[i] == 0)
                     Rooms[data.roomid].users[i].coord = StartCoords[0];
                 else
                     Rooms[data.roomid].users[i].coord = StartCoords[1];
 
-            io.sockets.in(data.roomid).emit('BackStartGame', {startgame: true});
+            io.sockets.in(data.roomid).emit('BackStartGame', true);
         });
 
         // Init game handle
         socket.on('InitGame', function (data) {
-            socket.in(data.roomid).emit('InitGame', Rooms[data.roomid].userCounter);
+            socket.emit('BackInitGame', Rooms[data.roomid].userCounter);
         });
 
         // Game handle

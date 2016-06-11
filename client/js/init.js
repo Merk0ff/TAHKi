@@ -7,15 +7,12 @@ var cube;
 var collision_map;
 var stats;
 
-var model_friendly;
-var model_enemy;
+var model_red;
+var model_blue;
 var model_bull;
 
-var Player;
-var Friend;
-
 function InitModels() {
-    var path = "resources/models/daleks/friendly/";
+    var path = "resources/models/daleks/red/";
     var name = "Dalek";
     NumOfLoadingModels++;
     var manager = new THREE.LoadingManager();
@@ -37,7 +34,7 @@ function InitModels() {
             object.scale.y = 0.1;
             object.scale.z = 0.1;
             NumOfLoadingModels--;
-            model_friendly = object;
+            model_red = object;
             InitFinish();
         });
     });
@@ -88,16 +85,6 @@ function InitSkybox() {
     scene.add(skybox);
 }
 
-function InitPlayer() {
-    Player = new Dalek("friendly");
-    Player.SetPosition(VecSet2(86, 570));
-
-    //EntityAdd(new Bullet(VecSet2(86, 570), VecSet2(1, 0)));
-
-    Friend = new Dalek("friendly");
-    Friend.SetPosition(VecSet2(220, 450));
-}
-
 function InitTerrain() {
     var path = "resources/models/mineways/scene1/";
     var name = "scene";
@@ -146,7 +133,6 @@ function InitFinish() {
     window.addEventListener("keydown", KeyDown);
     window.addEventListener("keypress", KeyPress);
     window.addEventListener("wheel", onWheel);
-    InitPlayer();
     Player.SetCamera();
     renderScene();
     $("#splash").fadeOut("slow");

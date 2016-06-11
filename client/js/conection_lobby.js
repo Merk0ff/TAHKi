@@ -54,7 +54,7 @@ function CreateRoom() {
 }
 
 function StartGame() {
-    socket.emit("StartGame", {});
+    socket.emit("StartGame", data);
 }
 
 function JoinRoom(nick, roomid) {

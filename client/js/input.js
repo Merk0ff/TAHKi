@@ -26,7 +26,7 @@ function MouseMove(e)
     {
         CamAX += (e.clientX - MouseX) / 100.0;
         CamAY += (e.clientY - MouseY) / 100.0;
-        Player.SetCamera();
+        players[mydata.userid].SetCamera();
         MouseX = e.clientX;
         MouseY = e.clientY;
     }
@@ -55,6 +55,6 @@ function onWheel(e) {
     // wheelDelta ?? ???? ??????????? ?????? ?????????? ????????
     var delta = e.deltaY || e.detail || e.wheelDelta;
     CamL += delta / 30.0;
-    Player.SetCamera();
+    players[mydata.userid].SetCamera();
     e.preventDefault ? e.preventDefault() : (e.returnValue = false);
 }
