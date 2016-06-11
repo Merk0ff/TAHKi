@@ -14,6 +14,15 @@ function ConnectionInit() {
         for (var i = 0; i < data.length; i++) {
             AddPlayer(data[i].userid, "red");
         }
+        window.addEventListener("mousemove", MouseMove);
+        window.addEventListener("mouseup", MouseUp);
+        window.addEventListener("mousedown", MouseDown);
+        window.addEventListener("keyup", KeyUp);
+        window.addEventListener("keydown", KeyDown);
+        window.addEventListener("keypress", KeyPress);
+        window.addEventListener("wheel", onWheel);
+        renderScene();
+        $("#splash").fadeOut("slow");
     });
 }
 

@@ -126,16 +126,6 @@ function InitFinish() {
     if (NumOfLoadingModels > 0)
         return;
     ConnectionInit();
-    window.addEventListener("mousemove", MouseMove);
-    window.addEventListener("mouseup", MouseUp);
-    window.addEventListener("mousedown", MouseDown);
-    window.addEventListener("keyup", KeyUp);
-    window.addEventListener("keydown", KeyDown);
-    window.addEventListener("keypress", KeyPress);
-    window.addEventListener("wheel", onWheel);
-    Player.SetCamera();
-    renderScene();
-    $("#splash").fadeOut("slow");
 }
 
 function Init() {

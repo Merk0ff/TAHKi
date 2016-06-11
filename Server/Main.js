@@ -108,7 +108,7 @@ function ConnectUser() {
 
         // Init game handle
         socket.on('InitGame', function (data) {
-            socket.emit('BackInitGame', Rooms[data.roomid].userCounter);
+            socket.emit('BackInitGame', Rooms[data.roomid].users);
         });
 
         // Game handle
