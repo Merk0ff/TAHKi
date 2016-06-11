@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     <link href='css/css.css' rel='stylesheet' type='text/css'>
     <script src="js/lib/socket.io.js"></script>
     <script src="js/conection.js"></script>
     <script type="text/javascript" src="js/lib/jquery.js"></script>
     <script type="text/javascript">
-        var socket = io('http://localhost:3000');
+        var socket = io('http://192.168.43.205:3000');
         var data = {};
 
         /* Mouse selection fix */
@@ -21,7 +20,7 @@
 
             $("#btn_join_show").click(function () {
                 $("#drop").slideToggle("fast");
-                $("#Nick").css()
+                $("#Nick").attr("readonly", "readonly");
             });
 
             $("#btn_start").click(function () {
@@ -29,14 +28,24 @@
             });
 
             $("#CreateRoom").click(function () {
+                $("#Nick").attr("readonly", "readonly");
                 CreateRoom();
             });
+
+            $("#btn_JoinBlue").click(function () {
+                JoinTeam(1);
+            });
+
+            $("#btn_JoinRed").click(function () {
+                JoinTeam(0);
+            });
+            GetData();
         });
     </script>
     <meta charset="UTF-8">
     <title>TAHKi OFFLINE</title>
 </head>
-<body onload="GetData()">
+<body>
 <h1 id="header" align="center">TAHKi OFFLINE</h1>
 <table align="center">
     <tr>
