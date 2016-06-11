@@ -107,18 +107,14 @@ function ConnectUser() {
 
         // Init game handle
         socket.on('InitGame', function (data) {
-            socket.in(data.roomid).emit('InitGame', {
-                playerteam: Rooms[data.roomid].users[data.userid].team,
-                red: Rooms[data.roomid].reteam,
-                blue: Rooms[data.roomid].blteam
-            })
+            socket.in(data.roomid).emit('InitGame', Rooms[data.roomid].users)
         });
 
         // Game handle
         socket.on('Game', function (data) {
             Rooms[data.roomid].users[data.userServerId].coord = data.coord;
 
-            io.sockets.in(data.roomid).emit('BackGame', {coord: Rooms[data.roomid].users[data.userServerId].coord});
+            io.sockets.in(data.roomid).emit('BackGame', Rooms[data.roomid].users);
         });
 
     });
