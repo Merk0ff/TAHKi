@@ -31,8 +31,6 @@ function ConnectUser() {
     io.on('connection', function (socket) {
         var address = socket.request.connection.remoteAddress;
 
-        //io.sockets.removeAllListeners();
-
         console.log('New connection from ' + address);
 
         // Crate new room callback
@@ -53,9 +51,11 @@ function ConnectUser() {
         // Join room callback
         socket.on('JoinRoom', function (data) {
             var send = AddNewUser(data);
-            
-            if (Rooms[data.roomid].users.length >= 10)
+
+            if (Rooms[data.roomid].users.length >= 10) {
                 socket.emit('Err', 0);
+                return;
+            }
 
             socket.join(data.roomid.toString());
             Rooms[data.roomid].users.push(data);
@@ -67,23 +67,26 @@ function ConnectUser() {
 
         // Join team callback
         socket.on('JoinTeam', function (data) {
-            Users[data.userServerId].team = data.team;
+            if (Users[data.userServerId].team != undefined) {
+                socket.emit('Err', 2);
+                return;
+            }
 
-            if (Rooms[data.roomid].reteam >= 5 || Rooms[data.roomid].blteam >= 5)
+
+            if (Rooms[data.roomid].reteam >= 5 || Rooms[data.roomid].blteam >= 5) {
                 socket.emit('Err', 1);
+                return;
+            }
+
+            Users[data.userServerId].team = data.team;
 
             if (data.team)
                 Rooms[data.roomid].blteam++;
             else
                 Rooms[data.roomid].reteam++;
-            
+
             io.sockets.in(data.roomid.toString()).emit('BackJoinTeam', {team: data.team, userid: data.userid});
         });
-
-        /*
-        socket.on('disconnect', function () {
-        });
-        */
     });
 }
 
