@@ -13,6 +13,7 @@ function ConnectionInit() {
     socket.on('BackInitGame', function (data) {
         for (var i = 0; i < data.length; i++) {
             AddPlayer(data[i].userid, "red");
+            players[data[i].userid].SetPosition(data[i].coord);
         }
         window.addEventListener("mousemove", MouseMove);
         window.addEventListener("mouseup", MouseUp);
@@ -24,13 +25,16 @@ function ConnectionInit() {
         renderScene();
         $("#splash").fadeOut("slow");
     });
-}
-
-function Response() {
-    socket.emit("Game", players[mydata.userid].GetPosition());
     socket.on('BackGame', function (data) {
         for (var i = 0; i < data.length; i++) {
             players[data[i].userid].SetPosition(data[i].coord);
-        }        
+            players[data[i].userid].Model.rotation.y = data[i].rotation;
+        }
     });
+}
+
+function Response() {
+    mydata.coord = players[mydata.userid].GetPosition();
+    mydata.rotation = players[mydata.userid].Model.rotation.y;
+    socket.emit("Game", mydata);
 }

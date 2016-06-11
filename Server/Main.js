@@ -1,6 +1,6 @@
 var StartCoords = [
-    {x: 1, y: 1},
-    {}
+    {x: 86, y: 570},
+    {x: 420, y: 73}
 ];
 var app;
 var io;
@@ -98,7 +98,7 @@ function ConnectUser() {
         // Start game handle
         socket.on('StartGame', function (data) {
             for (var i = 0; i < Rooms[data.roomid].userCounter; i++)
-                if (Rooms[data.roomid].users[i] == 0)
+                if (Rooms[data.roomid].users[i].team == 0)
                     Rooms[data.roomid].users[i].coord = StartCoords[0];
                 else
                     Rooms[data.roomid].users[i].coord = StartCoords[1];
@@ -108,14 +108,16 @@ function ConnectUser() {
 
         // Init game handle
         socket.on('InitGame', function (data) {
+            socket.join(data.roomid);
+            
             socket.emit('BackInitGame', Rooms[data.roomid].users);
         });
 
         // Game handle
         socket.on('Game', function (data) {
             Rooms[data.roomid].users[data.userServerId].coord = data.coord;
-
-            io.sockets.in(data.roomid).emit('BackGame', {coord: Rooms[data.roomid].users[data.userServerId].coord});
+            Rooms[data.roomid].users[data.userServerId].rotation = data.rotation;
+            io.sockets.in(data.roomid).emit('BackGame', Rooms[data.roomid].users);
         });
 
     });
