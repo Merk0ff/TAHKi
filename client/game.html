@@ -10,6 +10,7 @@
     <script type="text/javascript" src="js/lib/Stats.js"></script>
     <script type="text/javascript" src="js/lib/glMatrix-0.9.5.min.js"></script>
     <script type="text/javascript" src="js/lib/KeyboardState.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
 
     <script type="text/javascript" src="js/init.js"></script>
     <script type="text/javascript" src="js/entities.js"></script>
@@ -22,6 +23,7 @@
     <script type="text/javascript">
         $(document).ready(function()
         {
+            alert($.cookie("userid"));
             Init();
         });
     </script>

@@ -4,7 +4,9 @@
     <link href='css/css.css' rel='stylesheet' type='text/css'>
     <script src="js/lib/socket.io.js"></script>
     <script src="js/conection.js"></script>
+    <script src="js/errors.js"></script>
     <script type="text/javascript" src="js/lib/jquery.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
     <script type="text/javascript">
         var socket;
         var data = {};
@@ -16,6 +18,8 @@
 
         $(document).ready(function () {
             socket = io(window.location.origin);
+            InitErrors();
+            $("#Nick").val($.cookie("userid"));
             $("#mainTable").slideDown("slow");
             $("#mainTable").css("align", "center");
 
