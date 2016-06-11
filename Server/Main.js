@@ -1,7 +1,7 @@
-/**
- * Created by pd6 on 08.06.2016.
- */
-
+var StartCoords = [
+    {x: 1, y: 1},
+    {}
+];
 var app;
 var io;
 var http;
@@ -92,8 +92,32 @@ function ConnectUser() {
             else
                 Rooms[data.roomid].reteam++;
 
-            io.sockets.in(data.roomid.toString()).emit('BackJoinTeam', {team: data.team, userid: data.userid});
+            io.sockets.in(data.roomid).emit('BackJoinTeam', {team: data.team, userid: data.userid});
         });
+
+        // Start game handle
+        socket.on('StartGame', function (data) {
+            for (var i = 0; i < Rooms[data.roomid].users[i]; i++)
+                if (Rooms[data.roomid].users[i] == 0)
+                    Rooms[data.roomid].users[i].coord = StartCoords[0];
+                else
+                    Rooms[data.roomid].users[i].coord = StartCoords[1];
+
+            io.sockets.in(data.roomid).emit('BackStartGame', {startgame: true});
+        });
+
+        // Init game handle
+        socket.on('InitGame', function (data) {
+            socket.in(data.roomid).emit('InitGame', Rooms[data.roomid].userCounter);
+        });
+
+        // Game handle
+        socket.on('Game', function (data) {
+            Rooms[data.roomid].users[data.userServerId].coord = data.coord;
+
+            io.sockets.in(data.roomid).emit('BackGame', {coord: Rooms[data.roomid].users[data.userServerId].coord});
+        });
+
     });
 }
 
