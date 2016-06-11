@@ -56,6 +56,13 @@ Dalek.prototype.Rotate = function (angle) {
     this.Look.z = this.Speed * Math.cos(this.Model.rotation.y);
 };
 
+
+Dalek.prototype.SetRotate = function (angle) {
+    this.Model.rotation.y = angle;
+    this.Look.x = this.Speed * Math.sin(this.Model.rotation.y);
+    this.Look.z = this.Speed * Math.cos(this.Model.rotation.y);
+};
+
 Dalek.prototype.Update = function () {
     this.Light.position.copy(this.Model.position.clone().add(new THREE.Vector3(this.Look.x * 5, 17, 5 * this.Look.z)));
     this.LightTarget.position.copy(this.Light.position.clone().add(this.Look));

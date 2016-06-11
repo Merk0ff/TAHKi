@@ -28,7 +28,9 @@ function ConnectionInit() {
     socket.on('BackGame', function (data) {
         for (var i = 0; i < data.length; i++) {
             players[data[i].userid].SetPosition(data[i].coord);
-            players[data[i].userid].Model.rotation.y = data[i].rotation;
+            players[data[i].userid].SetRotate(data[i].rotation);
+            players[data[i].userid].Light.visible = data[i].light;
+            players[data[i].userid].Update();
         }
     });
 }
@@ -36,5 +38,6 @@ function ConnectionInit() {
 function Response() {
     mydata.coord = players[mydata.userid].GetPosition();
     mydata.rotation = players[mydata.userid].Model.rotation.y;
+    mydata.light = players[mydata.userid].Light.visible;
     socket.emit("Game", mydata);
 }

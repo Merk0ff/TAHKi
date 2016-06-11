@@ -117,6 +117,7 @@ function ConnectUser() {
         socket.on('Game', function (data) {
             Rooms[data.roomid].users[data.userServerId].coord = data.coord;
             Rooms[data.roomid].users[data.userServerId].rotation = data.rotation;
+            Rooms[data.roomid].users[data.userServerId].light = data.light;
             io.sockets.in(data.roomid).emit('BackGame', Rooms[data.roomid].users);
         });
 
