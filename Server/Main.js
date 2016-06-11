@@ -39,7 +39,7 @@ function ConnectUser() {
 
             Rooms[RoomId] = {
                 id: RoomId,
-                userCounter:  0,
+                userCounter: 0,
                 users: undefined,
                 blteam: 0,
                 reteam: 0
@@ -52,6 +52,12 @@ function ConnectUser() {
         // Join room callback
         socket.on('JoinRoom', function (data) {
             var send = AddNewUser(data);
+
+            for (var i; i < Rooms[data.roomid].userCounter; i++)
+                if (Rooms[data.roomid].users.userid == data.userid) {
+                    socket.emit('Err', 3);
+                    return;
+                }
 
             if (Rooms[data.roomid].userCounter >= 10) {
                 socket.emit('Err', 0);
