@@ -3,7 +3,7 @@
 <head>
     <link href='css/css.css' rel='stylesheet' type='text/css'>
     <script src="js/lib/socket.io.js"></script>
-    <script src="js/conection.js"></script>
+    <script src="js/conection_lobby.js"></script>
     <script src="js/errors.js"></script>
     <script type="text/javascript" src="js/lib/jquery.js"></script>
     <script type="text/javascript" src="js/lib/jquery.cookie.js"></script>
@@ -26,6 +26,10 @@
             $("#btn_join_show").click(function () {
                 $("#drop").slideToggle("fast");
                 $("#Nick").attr("readonly", "readonly");
+            });
+
+            $("#Start").click(function () {
+                StartGame();
             });
 
             $("#btn_start").click(function () {
@@ -101,7 +105,7 @@
                                 <li class="team_red" id="red_4"></li>
                                 <li class="team_red" id="red_5"></li>
                             </ul>
-                            <a href="game.html"><input type="button" class="button" value="Start game" id="Start"></a>
+                            <input type="button" class="button" value="Start game" id="Start">
                         </div>
                     </td>
                 </tr>

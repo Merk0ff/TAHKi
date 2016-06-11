@@ -138,6 +138,7 @@ var NumOfLoadingModels = 0;
 function InitFinish() {
     if (NumOfLoadingModels > 0)
         return;
+    ConnectionInit();
     window.addEventListener("mousemove", MouseMove);
     window.addEventListener("mouseup", MouseUp);
     window.addEventListener("mousedown", MouseDown);
