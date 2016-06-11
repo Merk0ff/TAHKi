@@ -16,6 +16,11 @@ function GetData() {
         data.userid = backdata.userid;
         data.userServerId = backdata.userServerId;
         data.roomid = backdata.roomid;
+        data.users = backdata.users;
+        for (var i = 0; i < data.users.length; i++)
+        {
+            data.users[i].team 
+        }
     });
 
     socket.on('BackNewRoomId', function (backdata) {
@@ -41,6 +46,10 @@ function JoinRoom(nick, roomid) {
 }
 
 function JoinTeam(Team) {
+    $("#btn_JoinBlue").attr("disabled", "disabled");
+    $("#btn_JoinRed").attr("disabled", "disabled");
+    $("#btn_JoinBlue").attr("class", "disabled");
+    $("#btn_JoinRed").attr("class", "disabled");
     data.team = Team;
     socket.emit('JoinTeam', data);
 }
