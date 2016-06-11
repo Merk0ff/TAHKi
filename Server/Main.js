@@ -1,12 +1,12 @@
 var StartCoords = [
     {x: 86, y: 570},
     {x: 420, y: 73}
-];
-var app;
-var io;
-var http;
+]; // Start coords arry
+var app; // Express app
+var io; // Socket.io handle
+var http; // Http handle
 
-var Rooms = [];
+var Rooms = []; // Arry of rooms
 
 function getRandomArbitary(min, max) {
     return Math.round(Math.random() * (max - min) + min);
@@ -109,7 +109,7 @@ function ConnectUser() {
         // Init game handle
         socket.on('InitGame', function (data) {
             socket.join(data.roomid);
-            
+
             socket.emit('BackInitGame', Rooms[data.roomid].users);
         });
 

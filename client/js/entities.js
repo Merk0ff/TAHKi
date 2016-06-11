@@ -5,7 +5,7 @@ function EntityAdd(object) {
 
     while (Entities[i] != undefined)
         i++;
-         Entities[i] = object;
+    Entities[i] = object;
 }
 
 function EntityRemove(index) {

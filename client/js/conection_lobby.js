@@ -1,5 +1,5 @@
-var index_red = 1;
-var index_blue = 1;
+var index_red = 1; // Count of red players 'now'
+var index_blue = 1; // Count of blue players 'now'
 
 function GetData() {
     socket.on('BackJoinTeam', function (backdata) {
@@ -19,7 +19,7 @@ function GetData() {
         data.users = backdata.users;
         $.cookie("roomid", data.roomid);
         $.cookie("userid", data.userid);
-        $.cookie("userServerId", data.userServerId);        
+        $.cookie("userServerId", data.userServerId);
         for (var i = 0; i < data.users.length; i++) {
             if (data.users[i].team == 0) {
                 $("#red_" + index_red).text(data.users[i].userid);

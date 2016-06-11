@@ -1,15 +1,15 @@
-var scene;
-var camera;
-var renderer;
-var terrain;
-var light;
-var cube;
-var collision_map;
-var stats;
+var scene; // Threejs scene
+var camera; // Threejs camera
+var renderer; // Threejs renderer
+var terrain; // Map model
+var light; // Threejs global lightning
+var cube; // NEED TO REMOVE
+var collision_map; // Collision map for map
+var stats; // Fps
 
-var model_red;
-var model_blue;
-var model_bull;
+var model_red; // Model of red Dalek model
+var model_blue; // Model of blue Dalek model
+var model_bull; // Model of bullet
 
 function InitModels() {
     var path = "resources/models/daleks/red/";
@@ -120,7 +120,7 @@ function InitTerrain() {
     });
 }
 
-var NumOfLoadingModels = 0;
+var NumOfLoadingModels = 0; // Model load counter
 
 function InitFinish() {
     if (NumOfLoadingModels > 0)

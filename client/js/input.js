@@ -1,7 +1,7 @@
-var MouseFlag = false;
-var MouseX = -1;
-var MouseY = -1;
-var Keys = [];
+var MouseFlag = false; // Mouse button down flag
+var MouseX = -1; // Mouse x cord
+var MouseY = -1; // Mouse y cord
+var Keys = []; // Keys clicked
 
 
 var KEY_CODE = {
@@ -15,15 +15,12 @@ var KEY_CODE = {
     SPACE: 32
 };
 
-function MouseUp(e)
-{
+function MouseUp(e) {
     MouseFlag = false;
 }
 
-function MouseMove(e)
-{
-    if (MouseFlag)
-    {
+function MouseMove(e) {
+    if (MouseFlag) {
         CamAX += (e.clientX - MouseX) / 100.0;
         CamAY += (e.clientY - MouseY) / 100.0;
         players[mydata.userid].SetCamera();
@@ -32,21 +29,18 @@ function MouseMove(e)
     }
 }
 
-function MouseDown(e)
-{
+function MouseDown(e) {
     MouseFlag = true;
     MouseX = e.clientX;
     MouseY = e.clientY;
     return false;
 }
 
-function KeyDown(e)
-{
+function KeyDown(e) {
     Keys[e.keyCode] = true;
 }
 
-function KeyUp(e)
-{
+function KeyUp(e) {
     Keys[e.keyCode] = false;
 }
 

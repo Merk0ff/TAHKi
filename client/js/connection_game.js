@@ -1,7 +1,5 @@
-var socket;
-var mydata = {};
-var count_red;
-var count_blue;
+var socket; // Socket by socket.io for game
+var mydata = {}; // Data of 'this' player
 
 function ConnectionInit() {
     socket = io(window.location.origin);

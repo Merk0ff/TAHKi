@@ -46,16 +46,19 @@ li {
     blue 3px 3px 0, blue 4px 4px 0,
     blue 5px 5px 0;
 }
+
 .team_blue_button {
     border-radius: 12px;
     background-color: blue;
     color: white;
 }
+
 .team_red_button {
     border-radius: 12px;
     background-color: red;
     color: white;
 }
+
 .disabled_button {
     border-radius: 12px;
     background-color: #444444;

@@ -1,5 +1,4 @@
-function renderScene()
-{
+function renderScene() {
     stats.begin();
     Update();
     requestAnimationFrame(renderScene);

@@ -1,4 +1,4 @@
-/* Constructor */
+/* Constructor of 'Dalek' */
 function Dalek(type) {
     this.Speed = 1;
     this.Look = new THREE.Vector3(0, 0, this.Speed);
@@ -69,13 +69,11 @@ Dalek.prototype.Update = function () {
     this.LightHelper.update();
 };
 
-Dalek.prototype.SetLight = function(state)
-{
+Dalek.prototype.SetLight = function (state) {
     this.Light.visible = state;
 };
 
-Dalek.prototype.ToggleLight = function()
-{
+Dalek.prototype.ToggleLight = function () {
     this.Light.visible = !this.Light.visible;
 };
 
