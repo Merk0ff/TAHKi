@@ -56,6 +56,11 @@ li {
     background-color: red;
     color: white;
 }
+.disabled_button {
+    border-radius: 12px;
+    background-color: #444444;
+    color: black;
+}
 
 .team_red {
     border-color: red;

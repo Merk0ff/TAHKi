@@ -16,6 +16,17 @@ function GetData() {
         data.userid = backdata.userid;
         data.userServerId = backdata.userServerId;
         data.roomid = backdata.roomid;
+        data.users = backdata.users;
+        for (var i = 0; i < data.users.length; i++) {
+            if (data.users[i].team == 0) {
+                $("#red_" + index_red).text(data.users[i].userid);
+                index_red++;
+            }
+            else if (data.users[i].team == 1) {
+                $("#bule_" + index_blue).text(data.users[i].userid);
+                index_blue++;
+            }
+        }
     });
 
     socket.on('BackNewRoomId', function (backdata) {
@@ -35,12 +46,16 @@ function CreateRoom() {
 function JoinRoom(nick, roomid) {
     data.userid = nick;
     data.roomid = roomid;
-
+    $.cookie("userid", nick);
     socket.emit('JoinRoom', data);
     $("#teams").show("fast");
 }
 
 function JoinTeam(Team) {
+    $("#btn_JoinBlue").attr("disabled", "disabled");
+    $("#btn_JoinRed").attr("disabled", "disabled");
+    $("#btn_JoinBlue").attr("class", "disabled");
+    $("#btn_JoinRed").attr("class", "disabled");
     data.team = Team;
     socket.emit('JoinTeam', data);
 }
