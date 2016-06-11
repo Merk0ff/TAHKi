@@ -1,6 +1,6 @@
 var StartCoords = [
-    {x: 1, y: 1},
-    {}
+    {x: 86, y: 570},
+    {x: 420, y: 73}
 ];
 var app;
 var io;
@@ -107,7 +107,11 @@ function ConnectUser() {
 
         // Init game handle
         socket.on('InitGame', function (data) {
-            socket.in(data.roomid).emit('InitGame', Rooms[data.roomid].userCounter);
+            socket.in(data.roomid).emit('InitGame', {
+                playerteam: Rooms[data.roomid].users[data.userid].team,
+                red: Rooms[data.roomid].reteam,
+                blue: Rooms[data.roomid].blteam
+            })
         });
 
         // Game handle
