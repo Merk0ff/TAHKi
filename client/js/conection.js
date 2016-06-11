@@ -1,9 +1,12 @@
 
 function GetData() {
+    socket.on('BackJoinTeam', function (backdata) {
+        data.team = backdata.team;
+        data.userid = backdata.userid;
+    });
     socket.on('BackNewRoomUser', function (backdata) {
         data.userid = backdata.userid;
         data.userServerId = backdata.userServerId;
-        /*****/
     });
     
     socket.on('BackNewRoomId', function (backdata) {
@@ -26,4 +29,9 @@ function JoinRoom(nick, roomid) {
     
     socket.emit('JoinRoom', data);
     $("#teams").show("fast");
+}
+
+function JoinTeam(Team) {
+    data.team = Team;
+    socket.emit('JoinTeam', data);
 }

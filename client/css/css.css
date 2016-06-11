@@ -24,12 +24,36 @@ body {
     padding: 0;
 }
 
-li{
+li {
     margin: 1px;
     border: 1px solid #cc1488;
     text-shadow: #cc1488 1px 1px 0, #cc1488 2px 2px 0,
     #cc1488 3px 3px 0, #cc1488 4px 4px 0,
     #cc1488 5px 5px 0;
+}
+
+.team_blue {
+    border-color: blue;
+    text-shadow: blue 1px 1px 0, blue 2px 2px 0,
+    blue 3px 3px 0, blue 4px 4px 0,
+    blue 5px 5px 0;
+}
+.team_blue_button {
+    border-radius: 12px;
+    background-color: blue;
+    color: white;
+}
+.team_red_button {
+    border-radius: 12px;
+    background-color: red;
+    color: white;
+}
+
+.team_red {
+    border-color: red;
+    text-shadow: red 1px 1px 0, red 2px 2px 0,
+    red 3px 3px 0, red 4px 4px 0,
+    red 5px 5px 0;
 }
 
 .panel {
@@ -41,8 +65,7 @@ li{
     padding: 5px 15px;
 }
 
-.button
-{
+.button {
     background-color: yellow;
     border-radius: 12px;
     border-color: gold;
@@ -53,7 +76,7 @@ li{
     color: white;
 }
 
-#splash{
+#splash {
     position: absolute;
     background-color: black;
     width: 100%;

@@ -3,7 +3,7 @@
 <head>
     <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
     <link href='css/css.css' rel='stylesheet' type='text/css'>
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="js/lib/socket.io.js"></script>
     <script src="js/conection.js"></script>
     <script type="text/javascript" src="js/lib/jquery.js"></script>
     <script type="text/javascript">
@@ -21,6 +21,7 @@
 
             $("#btn_join_show").click(function () {
                 $("#drop").slideToggle("fast");
+                $("#Nick").css()
             });
 
             $("#btn_start").click(function () {
@@ -67,20 +68,24 @@
             <table align="center" style="height: 100%">
                 <tr>
                     <td>
-                        <div id="teams" style="display: none; padding-top: 20px" class="panel" align="center">
-                            <ul id="team1" class="">
-                                <li>1</li>
-                                <li>2</li>
-                                <li>3</li>
-                                <li>4</li>
-                                <li>5</li>
+                        <div id="teams" style="display: none" class="panel" align="center">
+                            <br/>
+                            <input type="button" class="team_blue_button" value="Join Blue" id="btn_JoinBlue">
+                            <ul id="team_blue" class="">
+                                <li class="team_blue" id="blue_1"></li>
+                                <li class="team_blue" id="blue_2"></li>
+                                <li class="team_blue" id="blue_3"></li>
+                                <li class="team_blue" id="blue_4"></li>
+                                <li class="team_blue" id="blue_5"></li>
                             </ul>
-                            <ul id="team2" class="">
-                                <li>1</li>
-                                <li>2</li>
-                                <li>3</li>
-                                <li>4</li>
-                                <li>5</li>
+                            <br/>
+                            <input type="button" class="team_red_button" value="Join Red" id="btn_JoinRed">
+                            <ul id="team_red" class="">
+                                <li class="team_red" id="red_1"></li>
+                                <li class="team_red" id="red_2"></li>
+                                <li class="team_red" id="red_3"></li>
+                                <li class="team_red" id="red_4"></li>
+                                <li class="team_red" id="red_5"></li>
                             </ul>
                             <a href="game.html"><input type="button" class="button" value="Start game" id="Start"></a>
                         </div>

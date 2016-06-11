@@ -52,8 +52,7 @@ function ConnectUser() {
         socket.on('JoinTeam', function (data) {
             Users[data.userServerId].team = data.team;
 
-            io.sockets.in(data.roomid.toString()).emit('socket.on', {team: data.team});
-
+            io.sockets.in(data.roomid.toString()).emit('BackJoinTeam', {team: data.team, userid: data.userid});
             
         });
     });
