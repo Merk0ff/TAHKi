@@ -110,8 +110,8 @@ function InitSkybox() {
 }
 
 function InitTerrain() {
-    var path = "resources/models/mineways/scene1/";
-    var name = "scene";
+    var path = "resources/models/mineways/mirage/";
+    var name = "mirage";
     var manager = new THREE.LoadingManager();
     var mtlLoader = new THREE.MTLLoader();
     NumOfLoadingModels++;
@@ -133,7 +133,7 @@ function InitTerrain() {
             object.scale.x = 74;
             object.scale.y = 74;
             object.scale.z = 74;
-            object.position.y = -22;
+            object.position.y = -95;
             object.position.x = 262;
             object.position.z = 322;
             terrain = object;
