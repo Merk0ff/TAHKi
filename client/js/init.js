@@ -12,13 +12,13 @@ var model_blue; // Model of blue Dalek model
 var model_bull; // Model of bullet
 
 function InitModels() {
-    var path = "resources/models/daleks/red/";
+    var path = "resources/models/daleks/";
     var name = "Dalek";
     NumOfLoadingModels++;
     var manager = new THREE.LoadingManager();
     var mtlLoader = new THREE.MTLLoader();
     mtlLoader.setPath(path);
-    mtlLoader.load(name + ".mtl", function (materials) {
+    mtlLoader.load(name + "_red.mtl", function (materials) {
         materials.preload();
         var loader = new THREE.OBJLoader(manager);
         loader.setMaterials(materials);
@@ -35,6 +35,30 @@ function InitModels() {
             object.scale.z = 0.1;
             NumOfLoadingModels--;
             model_red = object;
+            InitFinish();
+        });
+    });
+
+
+    NumOfLoadingModels++;
+    mtlLoader.setPath(path);
+    mtlLoader.load(name + "_blue.mtl", function (materials) {
+        materials.preload();
+        var loader = new THREE.OBJLoader(manager);
+        loader.setMaterials(materials);
+        loader.setPath(path);
+        loader.load(name + ".obj", function (object) {
+            object.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+            object.scale.x = 0.1;
+            object.scale.y = 0.1;
+            object.scale.z = 0.1;
+            NumOfLoadingModels--;
+            model_blue = object;
             InitFinish();
         });
     });

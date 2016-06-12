@@ -10,7 +10,10 @@ function ConnectionInit() {
     socket.emit("InitGame", mydata);
     socket.on('BackInitGame', function (data) {
         for (var i = 0; i < data.length; i++) {
-            AddPlayer(data[i].userid, "red");
+            if(data[i].team == 0)
+                AddPlayer(data[i].userid, "red");
+            else if(data[i].team == 1)
+                AddPlayer(data[i].userid, "blue");
             players[data[i].userid].SetPosition(data[i].coord);
         }
         window.addEventListener("mousemove", MouseMove);
@@ -25,10 +28,12 @@ function ConnectionInit() {
     });
     socket.on('BackGame', function (data) {
         for (var i = 0; i < data.length; i++) {
-            players[data[i].userid].SetPosition(data[i].coord);
-            players[data[i].userid].SetRotate(data[i].rotation);
-            players[data[i].userid].Light.visible = data[i].light;
-            players[data[i].userid].Update();
+            if (data[i].userid != mydata.userid) {
+                players[data[i].userid].SetPosition(data[i].coord);
+                players[data[i].userid].SetRotate(data[i].rotation);
+                players[data[i].userid].Light.visible = data[i].light;
+                players[data[i].userid].Update();
+            }
         }
     });
 }

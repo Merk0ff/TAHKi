@@ -14,6 +14,8 @@ function Dalek(type) {
     this.LightHelper = new THREE.SpotLightHelper(this.Light);
     if (type == "red")
         this.Model = model_red.clone();
+    else if (type == "blue")
+        this.Model = model_blue.clone();
     scene.add(this.Model);
     scene.add(this.Light);
     scene.add(this.LightTarget);
