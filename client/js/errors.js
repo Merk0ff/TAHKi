@@ -8,6 +8,8 @@ function GetErrorExeption(code) {
             return "You can't change team.";
         case 3:
             return "Your nick is already used.\nPlease change.";
+        case 4:
+            return "This lobby uncreated."
     }
 }
 function InitErrors() {

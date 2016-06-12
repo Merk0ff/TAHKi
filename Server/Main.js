@@ -52,6 +52,11 @@ function ConnectUser() {
         // Join room callback
         socket.on('JoinRoom', function (data) {
             var send;
+            
+            if (Rooms[data.roomid] == undefined){
+                socket.emit('Err', 4);
+                return;
+            }
 
             for (var i = 0; i < Rooms[data.roomid].userCounter; i++)
                 if (Rooms[data.roomid].users[i].userid == data.userid) {
@@ -159,8 +164,8 @@ function SetUpServer() {
     Serverhandler();
     app.use(exp.static('../client'));
 
-    http.listen(3000, function () {
-        console.log('listening on *:3000');
+    http.listen(25565, function () {
+        console.log('listening on *:25565');
     });
 }
 
