@@ -35,7 +35,10 @@ function ConnectUser() {
 
         // Crate new room callback
         socket.on('NewRoom', function (data) {
-            var RoomId = getRandomArbitary(400, 30000);
+            var RoomId = getRandomArbitary(1, 3000);
+
+            while (Rooms[RoomId] != undefined)
+                RoomId = getRandomArbitary(1, 3000);
 
             Rooms[RoomId] = {
                 id: RoomId,
