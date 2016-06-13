@@ -1,42 +1,59 @@
 var StartCoords = [
     {x: 683, y: 255},
     {x: 172, y: 534}
-]; // Start coords arry
+];
+// Start coords arry
 var utils = require('./Scripts/utils'); // Utils module
+var PNG = require('./Scripts/png-node');
 var app; // Express app
 var io; // Socket.io handle
 var http; // Http handle
 
 var Rooms = []; // Arry of rooms
 
-var CollDet = function (x0, x1, y0, y1, roomid, userServerId) {
+var cmap_mirage;
+var cmap_mirage_w;
+
+var DetectCollision = function (x0, x1, y0, y1, roomid, userServerId) {
     var usersid = [], userCounter = 0;
 
+    var sx0, sx1, sy0, sy1;
     if (x0 > x1) {
-        var t = x0;
-        x0 = x1;
-        x1 = t;
+        sx0 = x1;
+        sx1 = x0;
+    }
+    else {
+        sx0 = x0;
+        sx1 = x1;
     }
 
+
     if (y0 > y1) {
-        var t = y0;
-        y0 = y1;
-        y1 = t;
+        sy0 = y1;
+        sy1 = y0;
+    }
+    else {
+        sy0 = y0;
+        sy1 = y1;
     }
 
     for (var i = 0; i < Rooms[roomid].userCounter; i++)
         if (Rooms[roomid].users[i].team != Rooms[roomid].users[userServerId].team)
-            if (Rooms[roomid].users[i].coord.x > x0 && Rooms[roomid].users[i].coord.x < x1
-                && Rooms[roomid].users[i].coord.y > y0 && Rooms[roomid].users[i].coord.y < y1) {
+            if (Rooms[roomid].users[i].coord.x > sx0 && Rooms[roomid].users[i].coord.x < sx1
+                && Rooms[roomid].users[i].coord.y > sy0 && Rooms[roomid].users[i].coord.y < sy1) {
                 usersid[userCounter] = i;
                 userCounter++;
             }
-    var deltaX = x1 - x0;
-    var deltaY = y1 - y0;
+    var deltaX = Math.abs(x1 - x0);
+    var deltaY = Math.abs(y1 - y0);
+    var signX = x0 < x1 ? 1 : -1;
+    var signY = y0 < y1 ? 1 : -1;
     var error = deltaX - deltaY;
     while (x0 <= x1 || y0 <= y1) {
         for (var i = 0; i < userCounter; i++) {
-            if (x0 > Rooms[roomid].users[usersid[i]].coord.x - 20 && x0 < Rooms[roomid].users[usersid[i]].coord.x + 20
+            if(utils.getPixel(cmap_mirage, cmap_mirage_w, Math.round(x0 / 7.4), Math.round(y0 / 7.4)) == 0)
+                return -1;
+            else if (x0 > Rooms[roomid].users[usersid[i]].coord.x - 20 && x0 < Rooms[roomid].users[usersid[i]].coord.x + 20
                 && y0 > Rooms[roomid].users[usersid[i]].coord.y - 20 && y0 < Rooms[roomid].users[usersid[i]].coord.y + 20) {
                 return Rooms[roomid].users[usersid[i]];
             }
@@ -45,11 +62,11 @@ var CollDet = function (x0, x1, y0, y1, roomid, userServerId) {
         var error2 = error * 2;
         if (error2 > -deltaY) {
             error -= deltaY;
-            x0 += 1;
+            x0 += signX;
         }
         if (error2 < deltaX) {
             error += deltaX;
-            y0 += 1;
+            y0 += signY;
         }
     }
 
@@ -226,7 +243,7 @@ function ConnectUser() {
 
         // Shoot handle
         socket.on('Shoot', function (data) {
-            var user = CollDet(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
+            var user = DetectCollision(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
                 data.coord.y, data.coord.y + 150 * Math.cos(data.rotation), data.roomid, data.userServerId);
 
             if (user != -1) {
@@ -281,6 +298,10 @@ function SetUpServer() {
 
 function Main() {
     SetUpServer();
+    cmap_mirage_w = 105;
+    PNG.decode('./../client/resources/models/mineways/mirage/cmap_merged.png', function (pixels) {
+        cmap_mirage = pixels;
+    });
 }
 
 if (require.main === module) {

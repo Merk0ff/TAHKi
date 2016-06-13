@@ -62,7 +62,7 @@ function ConnectionInit() {
             if (data[i].userid != mydata.userid) {
                 players[data[i].userid].SetPosition(data[i].coord);
                 players[data[i].userid].SetRotate(data[i].rotation);
-                players[data[i].userid].Light.visible = data[i].light;
+                //players[data[i].userid].Light.visible = data[i].light;
                 //players[data[i].userid].Update();
             }
         }
