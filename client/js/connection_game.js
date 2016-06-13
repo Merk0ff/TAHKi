@@ -24,6 +24,8 @@ function ConnectionInit() {
         window.addEventListener("keypress", KeyPress);
         window.addEventListener("wheel", onWheel);
         renderScene();
+        setInterval(Update, 30);
+        setInterval(UpdateKeyboard, 20);
         $("#splash").fadeOut("slow");
     });
     socket.on("BackSwichLight", function (data) {

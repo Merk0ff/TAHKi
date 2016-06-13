@@ -2,7 +2,8 @@ var scene; // Threejs scene
 var camera; // Threejs camera
 var renderer; // Threejs renderer
 var terrain; // Map model
-var light; // Threejs global lightning
+var light_dir; // Threejs global direction lightning
+var light_spot; // Threejs global spot lightning
 var cube; // NEED TO REMOVE
 var collision_map; // Collision map for map
 var stats; // Fps
@@ -168,17 +169,27 @@ function Init() {
     cube = new THREE.Mesh(new THREE.CubeGeometry(30, 30, 30), new THREE.MeshNormalMaterial());
     //scene.add(cube);
 
-    light = new THREE.DirectionalLight(0xffffff, 0.9);
-    light.position.set(1, 1, 1);
-    light.castShadow = false;
-    light.shadow.mapSize.width = 1024;    // power of 2
-    light.shadow.mapSize.height = 1024;
+    light_dir = new THREE.DirectionalLight(0xffffff, 0.9);
+    light_dir.position.set(1, 1, 1);
+    light_spot = new THREE.DirectionalLight(0xffffff, 0.9);
+    light_spot.position.set(-1, 1, -1);
+
+    /*
+    light_spot = new THREE.SpotLight(0xffffff, 0.9, 5000);
+    light_spot.position.set(0, 1000, 0);
+    light_spot.castShadow = true;
+    light_spot.shadow.mapSize.width = 1024;    // power of 2
+    light_spot.shadow.mapSize.height = 1024;
+    */
+    //var kek = new THREE.SpotLightHelper(light_spot);
+    //scene.add(kek);
     /*
      light.shadow.camera.near = 0.01;
      light.shadow.camera.far = 1000;
      light.shadow.camera.fov = 10;
      */
-    scene.add(light);
+    scene.add(light_spot);
+    scene.add(light_dir);
 
     var imgLoader = new THREE.ImageLoader();
     imgLoader.load("./resources/models/mineways/mirage/cmap_merged.png", function (e) {

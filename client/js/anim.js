@@ -40,18 +40,8 @@ function UpdateKeyboard() {
         players[mydata.userid].SetCamera();
     }
 }
-
 function Update() {
-    for (var i = 0; i < Entities.length; i++) {
-        if (Entities[i] != undefined) {
-            Entities[i].Update();
-            if (!Entities[i].IsAlive()) {
-                Entities[i].Destroy();
-                EntityRemove(i);
-            }
-        }
-    }
-    UpdateKeyboard();
+    //UpdateKeyboard();
     players[mydata.userid].Update();
     Response();
     //Friend.Update();

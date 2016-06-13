@@ -1,6 +1,6 @@
 function renderScene() {
     stats.begin();
-    Update();
+    //Update();
     requestAnimationFrame(renderScene);
     renderer.render(scene, camera);
     stats.end();

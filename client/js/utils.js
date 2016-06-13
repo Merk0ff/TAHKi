@@ -15,26 +15,6 @@ function VecSet3(x, y, z) {
     return new THREE.Vector3(x, y, z);
 }
 
-function LoadModel(path, name) {
-    var manager = new THREE.LoadingManager();
-    var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.setPath(path);
-    mtlLoader.load(name + ".mtl", function (materials) {
-        materials.preload();
-        var loader = new THREE.OBJLoader(manager);
-        loader.setMaterials(materials);
-        loader.setPath(path);
-        loader.load(name + ".obj", function (object) {
-            object.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.castShadow = true;
-                }
-            });
-            scene.add(object);
-        });
-    });
-}
-
 function getImageData(image) {
 
     var canvas = document.createElement('canvas');

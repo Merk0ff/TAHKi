@@ -1,6 +1,6 @@
 /* Constructor of 'Dalek' */
 function Dalek(type) {
-    this.Speed = 1;
+    this.Speed = 1.0;
     this.Look = new THREE.Vector3(0, 0, this.Speed);
     this.RelativeCam = new THREE.Vector3(0, 0, 0);
     this.Light = new THREE.SpotLight(0xff0000, 1, 300, 0.8, 0.8);
@@ -66,7 +66,7 @@ Dalek.prototype.SetRotate = function (angle) {
 };
 
 Dalek.prototype.Update = function () {
-    this.Light.position.copy(this.Model.position.clone().add(new THREE.Vector3(this.Look.x * 5, 17, 5 * this.Look.z)));
+    this.Light.position.copy(this.Model.position.clone().add(new THREE.Vector3(this.Look.x * 9, 17, 9 * this.Look.z)));
     this.LightTarget.position.copy(this.Light.position.clone().add(this.Look));
     this.LightHelper.update();
 };
