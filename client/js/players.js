@@ -8,3 +8,12 @@ function RemovePlayer(id)
     players[id].Destroy();
     delete players[id];
 }
+function HidePlayer(id)
+{
+    players[id].Model.visible = false;
+}
+
+function ShowPlayer(id)
+{
+    players[id].Model.visible = true;
+}

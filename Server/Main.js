@@ -63,11 +63,10 @@ function StartRound(roomid) {
         else
             Rooms[roomid].users[i].coord = StartCoords[1];
 
+        Rooms[roomid].users[i].iskill = 0;
     }
-
-    Rooms[roomid].users[i].iskill = 0;
-    Rooms[roomid].blinround = Rooms[data.roomid].blteam;
-    Rooms[roomid].reinround = Rooms[data.roomid].reteam;
+    Rooms[roomid].blinround = Rooms[roomid].blteam;
+    Rooms[roomid].reinround = Rooms[roomid].reteam;
 }
 
 function AddNewUser(data) {
@@ -79,6 +78,7 @@ function AddNewUser(data) {
 
     Rooms[data.roomid].users[Rooms[data.roomid].userCounter] = {
         userid: data.userid,
+        userServerId: Rooms[data.roomid].userCounter,
         roomid: data.roomid
     };
     Rooms[data.roomid].userCounter++;
@@ -214,9 +214,10 @@ function ConnectUser() {
 
         // Game handle
         socket.on('Game', function (data) {
-            if (Rooms[data.roomid].users[data.userServerId].iskill == 1)
+            if (Rooms[data.roomid].users[data.userServerId].iskill == 1) {
                 socket.emit('Err', 5);
-
+                return;
+            }
             Rooms[data.roomid].users[data.userServerId].coord = data.coord;
             Rooms[data.roomid].users[data.userServerId].rotation = data.rotation;
             Rooms[data.roomid].users[data.userServerId].light = data.light;
@@ -239,10 +240,12 @@ function ConnectUser() {
                 if (Rooms[data.roomid].blinround == 0) {
                     Rooms[data.roomid].recount++;
                     StartRound(data.roomid);
+                    socket.emit("StartNewRound", Rooms[data.roomid].users);
                 }
                 else if (Rooms[data.roomid].reinround == 0) {
                     Rooms[data.roomid].blcount++;
                     StartRound(data.roomid);
+                    socket.emit("StartNewRound", Rooms[data.roomid].users);
                 }
                 Rooms[data.roomid].users[user.userServerId].iskill = 1;
             }

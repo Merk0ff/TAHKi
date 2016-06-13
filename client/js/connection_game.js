@@ -1,5 +1,7 @@
 var socket; // Socket by socket.io for game
 var mydata = {}; // Data of 'this' player
+var timerPlayer;
+var timerConnection;
 
 function ConnectionInit() {
     socket = io(window.location.origin);
@@ -34,12 +36,27 @@ function ConnectionInit() {
         players[mydata.userid].SetCamera();
         renderScene();
         players[mydata.userid].SetCamera();
-        setInterval(Update, 30);
-        setInterval(UpdateKeyboard, 20);
+        timerConnection = setInterval(Update, 30);
+        timerPlayer = setInterval(UpdateKeyboard, 20);
     });
     socket.on("BackDiscoGame", function (data) {
         RemovePlayer(data);
     });
+    socket.on("BackShoot", function (data) {
+        if (data == mydata.userid) {
+            $("#splash").text("You died");
+            $("#splash").fadeIn("slow");
+            clearInterval(timerConnection);
+        }
+        HidePlayer(data);
+    });
+    socket.on("StartNewRound", function () {
+        for (var i = 0; i < data.length; i++) {
+            ShowPlayer(data[i].userid);
+            players[data[i].userid].SetPosition(data[i].coord);
+        }
+    });
+
     socket.on('BackGame', function (data) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].userid != mydata.userid) {
