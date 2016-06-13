@@ -2,7 +2,7 @@ var StartCoords = [
     {x: 683, y: 255},
     {x: 172, y: 534}
 ]; // Start coords arry
-var utils = require('./Scripts/utils'); // Utils
+var utils = require('./Scripts/utils'); // Utils module
 var app; // Express app
 var io; // Socket.io handle
 var http; // Http handle
@@ -38,7 +38,7 @@ var CollDet = function (x0, x1, y0, y1, roomid, userServerId) {
         for (var i = 0; i < userCounter; i++) {
             if (x0 > Rooms[roomid].users[usersid[i]].coord.x - 20 && x0 < Rooms[roomid].users[usersid[i]].coord.x + 20
                 && y0 > Rooms[roomid].users[usersid[i]].coord.y - 20 && y0 < Rooms[roomid].users[usersid[i]].coord.y + 20) {
-                return Rooms[roomid].users[usersid[i]].userid;
+                return Rooms[roomid].users[usersid[i]];
             }
         }
 
@@ -55,6 +55,20 @@ var CollDet = function (x0, x1, y0, y1, roomid, userServerId) {
 
     return -1;
 };
+
+function StartRound(roomid) {
+    for (var i = 0; i < Rooms[roomid].userCounter; i++) {
+        if (Rooms[roomid].users[i].team == 0)
+            Rooms[roomid].users[i].coord = StartCoords[0];
+        else
+            Rooms[roomid].users[i].coord = StartCoords[1];
+
+    }
+
+    Rooms[roomid].users[i].iskill = 0;
+    Rooms[roomid].blinround = Rooms[data.roomid].blteam;
+    Rooms[roomid].reinround = Rooms[data.roomid].reteam;
+}
 
 function AddNewUser(data) {
     var send = {
@@ -89,6 +103,12 @@ function ConnectUser() {
                     Rooms[data.roomid].blteam--;
                 else
                     Rooms[data.roomid].reteam--;
+
+            if (Rooms[data.roomid].users[data.userServerId].reinround != undefined && Rooms[data.roomid].users[data.userServerId].reinround != 0)
+                Rooms[data.roomid].users[data.userServerId].reinround--;
+
+            if (Rooms[data.roomid].users[data.userServerId].blinround != undefined && Rooms[data.roomid].users[data.userServerId].blinround != 0)
+                Rooms[data.roomid].users[data.userServerId].reinround--;
 
             io.sockets.in(data.roomid).emit('BackDiscoGame', data.userid);
 
@@ -176,12 +196,10 @@ function ConnectUser() {
         // Start game handle
         socket.on('StartGame', function (data) {
             for (var i = 0; i < Rooms[data.roomid].userCounter; i++) {
-                if (Rooms[data.roomid].users[i].team == 0)
-                    Rooms[data.roomid].users[i].coord = StartCoords[0];
-                else
-                    Rooms[data.roomid].users[i].coord = StartCoords[1];
-
-                Rooms[data.roomid].users[i].iskill = 0;
+                StartRound(data.roomid);
+                Rooms[data.roomid].blcount = 0;
+                Rooms[data.roomid].recount = 0;
+                Rooms[data.roomid].rounds = 0;
             }
 
             io.sockets.in(data.roomid).emit('BackStartGame', true);
@@ -215,8 +233,22 @@ function ConnectUser() {
                 data.coord.y, data.coord.y + 150 * Math.cos(data.rotation), data.roomid, data.userServerId);
 
             if (user != -1) {
-                io.sockets.in(data.roomid).emit('BackShoot', user);
-                Rooms[data.roomid].users[data.userServerId].iskill = 1;
+                io.sockets.in(data.roomid).emit('BackShoot', user.userid);
+
+                if (Rooms[data.roomid].users[user.userServerId].team == 1)
+                    Rooms[data.roomid].blinround--;
+                else
+                    Rooms[data.roomid].reinround--;
+
+                if (Rooms[data.roomid].blinround == 0) {
+                    Rooms[data.roomid].recount++;
+                    StartRound(data.roomid);
+                }
+                else if (Rooms[data.roomid].reinround == 0) {
+                    Rooms[data.roomid].blcount++;
+                    StartRound(data.roomid);
+                }
+                Rooms[data.roomid].users[user.userServerId].iskill = 1;
             }
         });
     });
