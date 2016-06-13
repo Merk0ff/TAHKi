@@ -3,6 +3,7 @@ function Dalek(type) {
     this.Speed = 1.0;
     this.Look = new THREE.Vector3(0, 0, this.Speed);
     this.RelativeCam = new THREE.Vector3(0, 0, 0);
+    /*
     this.Light = new THREE.SpotLight(0xff0000, 1, 300, 0.8, 0.8);
     this.Light.position.set(1, 1, 1);
     this.Light.castShadow = true;
@@ -12,13 +13,12 @@ function Dalek(type) {
     this.LightTarget.position = new THREE.Vector3(0, 0, 0);
     this.Light.target = this.LightTarget;
     this.LightHelper = new THREE.SpotLightHelper(this.Light);
+    */
     if (type == "red")
         this.Model = model_red.clone();
     else if (type == "blue")
         this.Model = model_blue.clone();
     scene.add(this.Model);
-    scene.add(this.Light);
-    scene.add(this.LightTarget);
     //scene.add(this.LightHelper);
 }
 
@@ -29,9 +29,7 @@ Dalek.prototype.SetPosition = function (new_position) {
 
 Dalek.prototype.Destroy = function()
 {
-    scene.remove(this.Model);
-    scene.remove(this.Light);
-    scene.remove(this.LightTarget);    
+    scene.remove(this.Model);   
 }
 
 Dalek.prototype.GetPosition = function () {
@@ -70,22 +68,6 @@ Dalek.prototype.SetRotate = function (angle) {
     this.Model.rotation.y = angle;
     this.Look.x = this.Speed * Math.sin(this.Model.rotation.y);
     this.Look.z = this.Speed * Math.cos(this.Model.rotation.y);
-};
-
-Dalek.prototype.Update = function () {
-    this.Light.position.copy(this.Model.position.clone().add(new THREE.Vector3(this.Look.x * 9, 17, 9 * this.Look.z)));
-    this.LightTarget.position.copy(this.Light.position.clone().add(this.Look));
-    this.LightHelper.update();
-};
-
-Dalek.prototype.SetLight = function (state) {
-    this.Light.visible = state;
-};
-
-Dalek.prototype.ToggleLight = function () {
-    this.Light.visible = !this.Light.visible;
-    mydata.light = this.Light.visible;
-    socket.emit("SwichLight", mydata);
 };
 
 /* Funcitons */

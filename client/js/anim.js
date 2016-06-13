@@ -1,4 +1,4 @@
-var CameraMode = 0; // Camera mod: 1 - 1st person view; 2 - 3rd person view
+var CameraMode = 1; // Camera mod: 1 - 1st person view; 2 - 3rd person view
 
 var CamAX = 1.0; // Rotation angle by x
 var CamAY = 0.8; // Rotation angle by y
@@ -9,9 +9,6 @@ function KeyPress(e) {
         case KEY_CODE.M:
             CameraMode ^= 1;
             players[mydata.userid].SetCamera();
-            break;
-        case KEY_CODE.L:
-            players[mydata.userid].ToggleLight();
             break;
         case KEY_CODE.SPACE:
             //BulletLaunch(VecSet2(Player.Model.position.x, players[mydata.userid].Model.position.z), VecSet2(players[mydata.userid].Look.x, players[mydata.userid].Look.z));
@@ -41,9 +38,6 @@ function UpdateKeyboard() {
     }
 }
 function Update() {
-    //UpdateKeyboard();
-    players[mydata.userid].Update();
+    //players[mydata.userid].Update();
     Response();
-    //Friend.Update();
-    //UpdateCam();
 }

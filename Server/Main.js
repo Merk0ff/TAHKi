@@ -187,10 +187,6 @@ function ConnectUser() {
             io.sockets.in(data.roomid).emit('BackStartGame', true);
         });
 
-        socket.on('SwichLight', function (data) {
-            io.sockets.in(data.roomid).emit('BackSwichLight', data);
-        });
-
         // Init game handle
         socket.on('InitGame', function (data) {
             socket.join(data.roomid);

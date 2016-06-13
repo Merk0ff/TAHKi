@@ -160,8 +160,7 @@ function Init() {
     document.body.appendChild(stats.dom);
     document.body.style.cursor = 'default';
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(45
-        , window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(1, 255);
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -178,12 +177,12 @@ function Init() {
     light_dir3.position.set(0, -1, 0);
 
     /*
-    light_spot = new THREE.SpotLight(0xffffff, 0.9, 5000);
-    light_spot.position.set(0, 1000, 0);
-    light_spot.castShadow = true;
-    light_spot.shadow.mapSize.width = 1024;    // power of 2
-    light_spot.shadow.mapSize.height = 1024;
-    */
+     light_spot = new THREE.SpotLight(0xffffff, 0.9, 5000);
+     light_spot.position.set(0, 1000, 0);
+     light_spot.castShadow = true;
+     light_spot.shadow.mapSize.width = 1024;    // power of 2
+     light_spot.shadow.mapSize.height = 1024;
+     */
     //var kek = new THREE.SpotLightHelper(light_spot);
     //scene.add(kek);
     /*

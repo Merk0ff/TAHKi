@@ -26,29 +26,31 @@ function ConnectionInit() {
         window.addEventListener("keydown", KeyDown);
         window.addEventListener("keypress", KeyPress);
         window.addEventListener("wheel", onWheel);
+        $(window).resize(function () {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+            players[mydata.userid].SetCamera();
+        });
+        players[mydata.userid].SetCamera();
         renderScene();
+        players[mydata.userid].SetCamera();
         setInterval(Update, 30);
         setInterval(UpdateKeyboard, 20);
-        $("#splash").fadeOut("slow");
     });
-    socket.on("BackSwichLight", function (data) {               
-        if (data.userid != mydata.userid) {                     
-            players[data.userid].Light.visible = data.light;    
-        }                                                       
-    }); 
-     socket.on("BackDiscoGame", function (data) {
-         RemovePlayer(data);
-     });                                                         
+    socket.on("BackDiscoGame", function (data) {
+        RemovePlayer(data);
+    });
     socket.on('BackGame', function (data) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].userid != mydata.userid) {
                 players[data[i].userid].SetPosition(data[i].coord);
                 players[data[i].userid].SetRotate(data[i].rotation);
                 players[data[i].userid].Light.visible = data[i].light;
-                players[data[i].userid].Update();
+                //players[data[i].userid].Update();
             }
         }
     });
+    $("#splash").fadeOut("slow");
 }
 
 function Response() {
