@@ -15,6 +15,7 @@ function KeyPress(e) {
             break;
         case KEY_CODE.SPACE:
             //BulletLaunch(VecSet2(Player.Model.position.x, players[mydata.userid].Model.position.z), VecSet2(players[mydata.userid].Look.x, players[mydata.userid].Look.z));
+            socket.emit("Shoot", mydata);
             break;
     }
 }
