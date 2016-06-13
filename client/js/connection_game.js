@@ -10,9 +10,9 @@ function ConnectionInit() {
     socket.emit("InitGame", mydata);
     socket.on('BackInitGame', function (data) {
         for (var i = 0; i < data.length; i++) {
-            if(data[i].team == 0)
+            if (data[i].team == 0)
                 AddPlayer(data[i].userid, "red");
-            else if(data[i].team == 1)
+            else if (data[i].team == 1)
                 AddPlayer(data[i].userid, "blue");
             players[data[i].userid].SetPosition(data[i].coord);
         }
@@ -25,6 +25,15 @@ function ConnectionInit() {
         window.addEventListener("wheel", onWheel);
         renderScene();
         $("#splash").fadeOut("slow");
+    });
+    socket.on("BackSwichLight", function (data) {
+        if (data.userid != mydata.userid) {
+            players[data.userid].Light.visible = data.light;
+        }
+    });
+    socket.on("BackShoot", function (userid) {
+        if (userid == mydata.userid)
+            alert("Пiмав!");
     });
     socket.on('BackGame', function (data) {
         for (var i = 0; i < data.length; i++) {
@@ -41,6 +50,5 @@ function ConnectionInit() {
 function Response() {
     mydata.coord = players[mydata.userid].GetPosition();
     mydata.rotation = players[mydata.userid].Model.rotation.y;
-    mydata.light = players[mydata.userid].Light.visible;
     socket.emit("Game", mydata);
 }

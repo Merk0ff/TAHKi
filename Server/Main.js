@@ -1,6 +1,6 @@
 var StartCoords = [
-    {x: 86, y: 570},
-    {x: 420, y: 73}
+    {x: 683, y: 255},
+    {x: 172, y: 534}
 ]; // Start coords arry
 var app; // Express app
 var io; // Socket.io handle
@@ -11,6 +11,51 @@ var Rooms = []; // Arry of rooms
 function getRandomArbitary(min, max) {
     return Math.round(Math.random() * (max - min) + min);
 }
+function CollDet(x0, x1, y0, y1, roomid) {
+    var usersid = [], userCounter = 0;
+
+    if (x0 > x1) {
+        var t = x0;
+        x0 = x1;
+        x1 = t;
+    }
+
+    if (y0 > y1) {
+        var t = y0;
+        y0 = y1;
+        y1 = t;
+    }
+
+    for (var i = 0; i < Rooms[roomid].userCounter; i++)
+        if (Rooms[roomid].users[i].coord.x > x0 && Rooms[roomid].users[i].coord.x < x1
+            && Rooms[roomid].users[i].coord.y > y0 && Rooms[roomid].users[i].coord.y < y1) {
+            usersid[userCounter] = i;
+            userCounter++;
+        }
+    var deltaX = x1 - x0;
+    var deltaY = y1 - y0;
+    var error = deltaX - deltaY;
+    while (x0 <= x1 || y0 <= y1) {
+        for (var i = 0; i < userCounter; i++) {
+            if (x0 > Rooms[roomid].users[usersid[i]].coord.x - 20 && x0 < Rooms[roomid].users[usersid[i]].coord.x + 20
+                && y0 > Rooms[roomid].users[usersid[i]].coord.y - 20 && y0 < Rooms[roomid].users[usersid[i]].coord.y + 20) {
+                return Rooms[roomid].users[usersid[i]].userid;
+            }
+        }
+
+        var error2 = error * 2;
+        if (error2 > -deltaY) {
+            error -= deltaY;
+            x0 += 1;
+        }
+        if (error2 < deltaX) {
+            error += deltaX;
+            y0 += 1;
+        }
+    }
+    return -1;
+}
+
 
 function AddNewUser(data) {
     var send = {
@@ -55,8 +100,8 @@ function ConnectUser() {
         // Join room callback
         socket.on('JoinRoom', function (data) {
             var send;
-            
-            if (Rooms[data.roomid] == undefined){
+
+            if (Rooms[data.roomid] == undefined) {
                 socket.emit('Err', 4);
                 return;
             }
@@ -114,6 +159,10 @@ function ConnectUser() {
             io.sockets.in(data.roomid).emit('BackStartGame', true);
         });
 
+        socket.on('SwichLight', function (data) {
+            io.sockets.in(data.roomid).emit('BackSwichLight', data);
+        });
+
         // Init game handle
         socket.on('InitGame', function (data) {
             socket.join(data.roomid);
@@ -129,6 +178,14 @@ function ConnectUser() {
             io.sockets.in(data.roomid).emit('BackGame', Rooms[data.roomid].users);
         });
 
+        // Shoot handle
+        socket.on('Shoot', function (data) {
+            var user = CollDet(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
+                data.coord.y, data.coord.y + 150 * Math.cos(data.rotation), data.roomid);
+
+            if (user != -1)
+                io.sockets.in(data.roomid).emit('BackShoot', user);
+        });
     });
 }
 

@@ -134,7 +134,7 @@ function InitTerrain() {
             object.scale.y = 74;
             object.scale.z = 74;
             object.position.y = -95;
-            object.position.x = 262;
+            object.position.x = 410;
             object.position.z = 322;
             terrain = object;
             NumOfLoadingModels--;
@@ -181,7 +181,7 @@ function Init() {
     scene.add(light);
 
     var imgLoader = new THREE.ImageLoader();
-    imgLoader.load("./resources/models/mineways/scene1/collision_map.png", function (e) {
+    imgLoader.load("./resources/models/mineways/mirage/cmap_merged.png", function (e) {
         collision_map = getImageData(e);
     });
 

@@ -77,14 +77,16 @@ Dalek.prototype.SetLight = function (state) {
 
 Dalek.prototype.ToggleLight = function () {
     this.Light.visible = !this.Light.visible;
+    mydata.light = this.Light.visible;
+    socket.emit("SwichLight", mydata);
 };
 
 /* Funcitons */
 Dalek.prototype.Move = function () {
     var Newposition = this.Model.position.clone().add(this.Look);
-    //if (DetectCollision(collision_map, 5, Newposition.x, this.Model.position.z))
+    if (DetectCollision(collision_map, 5, Newposition.x, this.Model.position.z))
         this.Model.position.x += this.Look.x;
-    //if (DetectCollision(collision_map, 5, this.Model.position.x, Newposition.z))
+    if (DetectCollision(collision_map, 5, this.Model.position.x, Newposition.z))
         this.Model.position.z += this.Look.z;
     $("#debug").html("X:" + this.Model.position.x + "<br/>Z:" + this.Model.position.z);
 };
