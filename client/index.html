@@ -16,8 +16,14 @@
             $(this).select();
         });
 
+        var GameLoadFlag = false;
+
         $(document).ready(function () {
             socket = io(window.location.origin);
+            $(window).bind("beforeunload", function () {
+                if (!GameLoadFlag)
+                    socket.emit('Disco', data);
+            });
             InitErrors();
             $("#Nick").val($.cookie("userid"));
             $("#mainTable").slideDown("slow");

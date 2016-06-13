@@ -31,43 +31,40 @@ function getImageData(image) {
 function getPixel(imagedata, x, y) {
 
     var position = ( x + imagedata.width * y ) * 4, data = imagedata.data;
-    return {r: data[position], g: data[position + 1], b: data[position + 2], a: data[position + 3]};
-
+    return data[position];
 }
 
 function DetectSimpleCollision(map, x, y) {
     var color = getPixel(map, Math.round(x / 7.4), Math.round(y / 7.4));
-    if (color.r == 0)
+    if (color == 0)
         return false;
     return true;
 }
 function DetectCollision(map, size, x, y) {
     var color = getPixel(map, Math.round((x + size) / 7.4), Math.round(y / 7.4));
-    if (color.r == 0)
+    if (color == 0)
         return false;
     color = getPixel(map, Math.round(x / 7.4), Math.round((y + size) / 7.4));
-    if (color.r == 0)
+    if (color == 0)
         return false;
     color = getPixel(map, Math.round((x - size) / 7.4), Math.round(y / 7.4));
-    if (color.r == 0)
+    if (color == 0)
         return false;
     color = getPixel(map, Math.round(x / 7.4), Math.round((y - size) / 7.4));
-    if (color.r == 0)
+    if (color == 0)
         return false;
-    /*
-     color = getPixel(map, Math.round((x + size) / 7.4), Math.round((y + size) / 7.4));
-     if(color.r == 0)
-     return false;
-     color = getPixel(map, Math.round((x - size) / 7.4), Math.round((y + size) / 7.4));
-     if(color.r == 0)
-     return false;
-     color = getPixel(map, Math.round((x + size) / 7.4), Math.round((y - size) / 7.4));
-     if(color.r == 0)
-     return false;
-     color = getPixel(map, Math.round((x - size) / 7.4), Math.round((y - size) / 7.4));
-     if(color.r == 0)
-     return false;
-     */
+    color = getPixel(map, Math.round((x + size) / 7.4), Math.round((y + size) / 7.4));
+    if (color == 0)
+        return false;
+    color = getPixel(map, Math.round((x - size) / 7.4), Math.round((y + size) / 7.4));
+    if (color == 0)
+        return false;
+    color = getPixel(map, Math.round((x + size) / 7.4), Math.round((y - size) / 7.4));
+    if (color == 0)
+        return false;
+    color = getPixel(map, Math.round((x - size) / 7.4), Math.round((y - size) / 7.4));
+    if (color == 0)
+        return false;
     /*
      var color = getPixel(map, Math.round(x / 7.4), Math.round(y / 7.4));
      if(color.r > 0)

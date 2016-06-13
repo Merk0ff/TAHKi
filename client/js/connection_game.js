@@ -3,6 +3,9 @@ var mydata = {}; // Data of 'this' player
 
 function ConnectionInit() {
     socket = io(window.location.origin);
+    $(window).bind("beforeunload", function () {
+        socket.emit('Disco', mydata);
+    });
     InitErrors();
     mydata.roomid = $.cookie("roomid");
     mydata.userid = $.cookie("userid");
@@ -28,15 +31,14 @@ function ConnectionInit() {
         setInterval(UpdateKeyboard, 20);
         $("#splash").fadeOut("slow");
     });
-    socket.on("BackSwichLight", function (data) {
-        if (data.userid != mydata.userid) {
-            players[data.userid].Light.visible = data.light;
-        }
-    });
-    socket.on("BackShoot", function (userid) {
-        if (userid == mydata.userid)
-            alert("Пiмав!");
-    });
+    socket.on("BackSwichLight", function (data) {               
+        if (data.userid != mydata.userid) {                     
+            players[data.userid].Light.visible = data.light;    
+        }                                                       
+    }); 
+     socket.on("BackDiscoGame", function (data) {
+         RemovePlayer(data);
+     });                                                         
     socket.on('BackGame', function (data) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].userid != mydata.userid) {

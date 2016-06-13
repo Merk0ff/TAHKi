@@ -12,6 +12,25 @@ function GetData() {
             index_blue++;
         }
     });
+    socket.on('BackDiscoLobby', function (backdata) {
+        for (; index_red > 0; index_red--)
+            $("#red_" + index_red).text("");
+        for (; index_blue > 0; index_blue--)
+            $("#blue_" + index_blue).text("");
+        index_blue++;
+        index_red++;
+
+        for (var i = 0; i < backdata.length; i++) {
+            if (backdata[i].team == 0) {
+                $("#red_" + index_red).text(backdata[i].userid);
+                index_red++;
+            }
+            else if (backdata[i].team == 1) {
+                $("#blue_" + index_blue).text(backdata[i].userid);
+                index_blue++;
+            }
+        }
+    });
     socket.on('BackNewRoomUser', function (backdata) {
         data.userid = backdata.userid;
         data.userServerId = backdata.userServerId;
@@ -35,6 +54,7 @@ function GetData() {
 
     socket.on('BackStartGame', function (flag) {
         if (flag == true) {
+            GameLoadFlag = true;
             window.location.replace(window.location.origin + "/game.html");
         }
     });

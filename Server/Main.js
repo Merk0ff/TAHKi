@@ -9,6 +9,53 @@ var http; // Http handle
 
 var Rooms = []; // Arry of rooms
 
+var CollDet = function (x0, x1, y0, y1, roomid, userServerId) {
+    var usersid = [], userCounter = 0;
+
+    if (x0 > x1) {
+        var t = x0;
+        x0 = x1;
+        x1 = t;
+    }
+
+    if (y0 > y1) {
+        var t = y0;
+        y0 = y1;
+        y1 = t;
+    }
+
+    for (var i = 0; i < Rooms[roomid].userCounter; i++)
+        if (Rooms[roomid].users[i].team != Rooms[roomid].users[userServerId].team)
+            if (Rooms[roomid].users[i].coord.x > x0 && Rooms[roomid].users[i].coord.x < x1
+                && Rooms[roomid].users[i].coord.y > y0 && Rooms[roomid].users[i].coord.y < y1) {
+                usersid[userCounter] = i;
+                userCounter++;
+            }
+    var deltaX = x1 - x0;
+    var deltaY = y1 - y0;
+    var error = deltaX - deltaY;
+    while (x0 <= x1 || y0 <= y1) {
+        for (var i = 0; i < userCounter; i++) {
+            if (x0 > Rooms[roomid].users[usersid[i]].coord.x - 20 && x0 < Rooms[roomid].users[usersid[i]].coord.x + 20
+                && y0 > Rooms[roomid].users[usersid[i]].coord.y - 20 && y0 < Rooms[roomid].users[usersid[i]].coord.y + 20) {
+                return Rooms[roomid].users[usersid[i]].userid;
+            }
+        }
+
+        var error2 = error * 2;
+        if (error2 > -deltaY) {
+            error -= deltaY;
+            x0 += 1;
+        }
+        if (error2 < deltaX) {
+            error += deltaX;
+            y0 += 1;
+        }
+    }
+
+    return -1;
+};
+
 function AddNewUser(data) {
     var send = {
         userid: data.userid,
@@ -31,22 +78,29 @@ function ConnectUser() {
         console.log('New connection from ' + address);
 
         // Disconect handle
-        socket.on('disconnect', function (data) {
-            Rooms[data.userid].userCounter--;
+        socket.on('Disco', function (data) {
+            console.log('Disconnect from server' + socket.request.connection.remoteAddress);
+            if (data.roomid == undefined)
+                return;
+            Rooms[data.roomid].userCounter--;
 
-            if (Rooms[data.userid].users[data.userid].team == 1)
-                Rooms[data.userid].blteam--;
-            else
-                Rooms[data.userid].reteam--;
+            if (Rooms[data.roomid].users[data.userServerId].team != undefined)
+                if (Rooms[data.roomid].users[data.userServerId].team == 1)
+                    Rooms[data.roomid].blteam--;
+                else
+                    Rooms[data.roomid].reteam--;
 
-            io.sockets.in(data.roomid).emit('Backdisconnect', {userid: data.userid});
+            io.sockets.in(data.roomid).emit('BackDiscoGame', data.userid);
 
-            if (Rooms[data.userid].userCounter == 0) {
-                delete Rooms[data.userid];
+            if (Rooms[data.roomid].userCounter == 0) {
+                delete Rooms[data.roomid];
                 return;
             }
-            else
-                delete Rooms[data.userid].users[data.userid];
+            else {
+                delete Rooms[data.roomid].users[data.userServerId];
+                Rooms[data.roomid].users.length--;
+                io.sockets.in(data.roomid).emit('BackDiscoLobby', Rooms[data.roomid].users);
+            }
         });
 
         // Crate new room callback
@@ -146,8 +200,8 @@ function ConnectUser() {
 
         // Game handle
         socket.on('Game', function (data) {
-            if (Rooms[data.roomid].users[data.userid].iskill == 1)
-                io.sockets.in(data.roomid).emit('Err', 5);
+            if (Rooms[data.roomid].users[data.userServerId].iskill == 1)
+                socket.emit('Err', 5);
 
             Rooms[data.roomid].users[data.userServerId].coord = data.coord;
             Rooms[data.roomid].users[data.userServerId].rotation = data.rotation;
@@ -157,12 +211,12 @@ function ConnectUser() {
 
         // Shoot handle
         socket.on('Shoot', function (data) {
-            var user = utils.CollDet(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
-                data.coord.y, data.coord.y + 150 * Math.cos(data.rotation), data.roomid);
+            var user = CollDet(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
+                data.coord.y, data.coord.y + 150 * Math.cos(data.rotation), data.roomid, data.userServerId);
 
             if (user != -1) {
                 io.sockets.in(data.roomid).emit('BackShoot', user);
-                Rooms[data.roomid].users[data.userid].iskill = 1;
+                Rooms[data.roomid].users[data.userServerId].iskill = 1;
             }
         });
     });
