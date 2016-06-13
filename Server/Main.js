@@ -2,61 +2,12 @@ var StartCoords = [
     {x: 683, y: 255},
     {x: 172, y: 534}
 ]; // Start coords arry
+var utils = require('./Scripts/utils'); // Utils
 var app; // Express app
 var io; // Socket.io handle
 var http; // Http handle
 
 var Rooms = []; // Arry of rooms
-
-function getRandomArbitary(min, max) {
-    return Math.round(Math.random() * (max - min) + min);
-}
-function CollDet(x0, x1, y0, y1, roomid) {
-    var usersid = [], userCounter = 0;
-
-    if (x0 > x1) {
-        var t = x0;
-        x0 = x1;
-        x1 = t;
-    }
-
-    if (y0 > y1) {
-        var t = y0;
-        y0 = y1;
-        y1 = t;
-    }
-
-    for (var i = 0; i < Rooms[roomid].userCounter; i++)
-        if (Rooms[roomid].users[i].coord.x > x0 && Rooms[roomid].users[i].coord.x < x1
-            && Rooms[roomid].users[i].coord.y > y0 && Rooms[roomid].users[i].coord.y < y1) {
-            usersid[userCounter] = i;
-            userCounter++;
-        }
-    var deltaX = x1 - x0;
-    var deltaY = y1 - y0;
-    var error = deltaX - deltaY;
-    while (x0 <= x1 || y0 <= y1) {
-        for (var i = 0; i < userCounter; i++) {
-            if (x0 > Rooms[roomid].users[usersid[i]].coord.x - 20 && x0 < Rooms[roomid].users[usersid[i]].coord.x + 20
-                && y0 > Rooms[roomid].users[usersid[i]].coord.y - 20 && y0 < Rooms[roomid].users[usersid[i]].coord.y + 20) {
-                return Rooms[roomid].users[usersid[i]].userid;
-            }
-        }
-
-        var error2 = error * 2;
-        if (error2 > -deltaY) {
-            error -= deltaY;
-            x0 += 1;
-        }
-        if (error2 < deltaX) {
-            error += deltaX;
-            y0 += 1;
-        }
-    }
-    return -1;
-}
-
-
 
 function AddNewUser(data) {
     var send = {
@@ -79,12 +30,31 @@ function ConnectUser() {
 
         console.log('New connection from ' + address);
 
+        // Disconect handle
+        socket.on('disconnect', function (data) {
+            Rooms[data.userid].userCounter--;
+
+            if (Rooms[data.userid].users[data.userid].team == 1)
+                Rooms[data.userid].blteam--;
+            else
+                Rooms[data.userid].reteam--;
+
+            io.sockets.in(data.roomid).emit('Backdisconnect', {userid: data.userid});
+
+            if (Rooms[data.userid].userCounter == 0) {
+                delete Rooms[data.userid];
+                return;
+            }
+            else
+                delete Rooms[data.userid].users[data.userid];
+        });
+
         // Crate new room callback
         socket.on('NewRoom', function (data) {
-            var RoomId = getRandomArbitary(1, 3000);
+            var RoomId = utils.getRandom(1, 3000);
 
             while (Rooms[RoomId] != undefined)
-                RoomId = getRandomArbitary(1, 3000);
+                RoomId = utils.getRandom(1, 3000);
 
             Rooms[RoomId] = {
                 id: RoomId,
@@ -151,11 +121,14 @@ function ConnectUser() {
 
         // Start game handle
         socket.on('StartGame', function (data) {
-            for (var i = 0; i < Rooms[data.roomid].userCounter; i++)
+            for (var i = 0; i < Rooms[data.roomid].userCounter; i++) {
                 if (Rooms[data.roomid].users[i].team == 0)
                     Rooms[data.roomid].users[i].coord = StartCoords[0];
                 else
                     Rooms[data.roomid].users[i].coord = StartCoords[1];
+
+                Rooms[data.roomid].users[i].iskill = 0;
+            }
 
             io.sockets.in(data.roomid).emit('BackStartGame', true);
         });
@@ -173,6 +146,9 @@ function ConnectUser() {
 
         // Game handle
         socket.on('Game', function (data) {
+            if (Rooms[data.roomid].users[data.userid].iskill == 1)
+                io.sockets.in(data.roomid).emit('Err', 5);
+
             Rooms[data.roomid].users[data.userServerId].coord = data.coord;
             Rooms[data.roomid].users[data.userServerId].rotation = data.rotation;
             Rooms[data.roomid].users[data.userServerId].light = data.light;
@@ -181,36 +157,24 @@ function ConnectUser() {
 
         // Shoot handle
         socket.on('Shoot', function (data) {
-            var user = CollDet(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
+            var user = utils.CollDet(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
                 data.coord.y, data.coord.y + 150 * Math.cos(data.rotation), data.roomid);
 
-            if (user != -1)
+            if (user != -1) {
                 io.sockets.in(data.roomid).emit('BackShoot', user);
+                Rooms[data.roomid].users[data.userid].iskill = 1;
+            }
         });
     });
-}
-
-function SendFile(res, path) {
-    var fs = require('fs');
-
-    fs.readFile('../client' + path,
-        function (err, data) {
-            if (err) {
-                res.writeHead(500);
-                return res.end('Error loading ' + path);
-            }
-            res.writeHead(200);
-            res.end(data);
-        });
 }
 
 function Serverhandler() {
     app.get('/', function (req, res) {
-        SendFile(res, '/index.html');
+        utils.SendFile(res, '/index.html');
     });
 
     app.get('/game', function (req, res) {
-        SendFile(res, '/game.html');
+        utils.SendFile(res, '/game.html');
     });
 
 }
