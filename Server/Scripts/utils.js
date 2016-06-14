@@ -19,13 +19,13 @@ var SendFile = function (res, path) {
         });
 };
 
-function getPixel(imagedata, width, x, y) {
+var getPixel = function(imagedata, width, x, y) {
 
     var position = ( x + width * y ) * 4;
     return imagedata[position];
 }
 
-function DetectSimpleCollision(map, x, y) {
+var DetectSimpleCollision = function(map, x, y) {
     var color = getPixel(map, Math.round(x / 7.4), Math.round(y / 7.4));
     if (color == 0)
         return false;
