@@ -18,6 +18,7 @@ function KeyPress(e) {
 }
 
 function UpdateKeyboard() {
+    console.log("updk");
     if (Keys[KEY_CODE.UP]) {
         players[mydata.userid].Move();
         players[mydata.userid].SetCamera();
@@ -38,6 +39,7 @@ function UpdateKeyboard() {
     }
 }
 function Update() {
+    console.log("upd");
     //players[mydata.userid].Update();
     Response();
 }

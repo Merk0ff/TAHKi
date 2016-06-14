@@ -1,7 +1,7 @@
 function renderScene() {
     stats.begin();
-    Update();
-    UpdateKeyboard();
+    //Update();
+    //UpdateKeyboard();
     requestAnimationFrame(renderScene);
     renderer.render(scene, camera);
     stats.end();

@@ -15,7 +15,7 @@ var cmap_mirage;
 var cmap_mirage_w;
 
 var DetectCollision = function (x0, x1, y0, y1, roomid, userServerId) {
-    var usersid = [], userCounter = 0;
+    var usersid = [], userCounter1 = 0;
 
     var sx0, sx1, sy0, sy1;
     if (x0 > x1) {
@@ -41,16 +41,16 @@ var DetectCollision = function (x0, x1, y0, y1, roomid, userServerId) {
         if (Rooms[roomid].users[i].team != Rooms[roomid].users[userServerId].team)
             if (Rooms[roomid].users[i].coord.x > sx0 && Rooms[roomid].users[i].coord.x < sx1
                 && Rooms[roomid].users[i].coord.y > sy0 && Rooms[roomid].users[i].coord.y < sy1) {
-                usersid[userCounter] = i;
-                userCounter++;
+                usersid[userCounter1] = i;
+                userCounter1++;
             }
     var deltaX = Math.abs(x1 - x0);
     var deltaY = Math.abs(y1 - y0);
     var signX = x0 < x1 ? 1 : -1;
     var signY = y0 < y1 ? 1 : -1;
     var error = deltaX - deltaY;
-    while (x0 <= x1 || y0 <= y1) {
-        for (var i = 0; i < userCounter; i++) {
+    while (Math.abs(x0 - x1) > 2 || Math.abs(y0 - y1) > 2) {
+        for (var i = 0; i < userCounter1; i++) {
             if(utils.getPixel(cmap_mirage, cmap_mirage_w, Math.round(x0 / 7.4), Math.round(y0 / 7.4)) == 0)
                 return -1;
             else if (x0 > Rooms[roomid].users[usersid[i]].coord.x - 20 && x0 < Rooms[roomid].users[usersid[i]].coord.x + 20
@@ -84,6 +84,7 @@ function StartRound(roomid) {
     }
     Rooms[roomid].blinround = Rooms[roomid].blteam;
     Rooms[roomid].reinround = Rooms[roomid].reteam;
+    Rooms[roomid].rounds++;
 }
 
 function AddNewUser(data) {
@@ -110,10 +111,15 @@ function ConnectUser() {
 
         // Disconect handle
         socket.on('Disco', function (data) {
-            console.log('Disconnect from server' + socket.request.connection.remoteAddress);
             if (data.roomid == undefined)
                 return;
+            if (Rooms[data.roomid] == undefined)
+                return;
+            if (Rooms[data.roomid].users[data.userServerId] == undefined)
+                return;
+
             Rooms[data.roomid].userCounter--;
+            console.log('Disconnect from server' + socket.request.connection.remoteAddress);
 
             if (Rooms[data.roomid].users[data.userServerId].team != undefined)
                 if (Rooms[data.roomid].users[data.userServerId].team == 1)
@@ -212,25 +218,33 @@ function ConnectUser() {
 
         // Start game handle
         socket.on('StartGame', function (data) {
-            for (var i = 0; i < Rooms[data.roomid].userCounter; i++) {
-                StartRound(data.roomid);
-                Rooms[data.roomid].blcount = 0;
-                Rooms[data.roomid].recount = 0;
-                Rooms[data.roomid].rounds = 0;
-            }
+            StartRound(data.roomid);
+            Rooms[data.roomid].blcount = 0;
+            Rooms[data.roomid].recount = 0;
+            Rooms[data.roomid].rounds = 0;
+            Rooms[data.roomid].connectedUsers = 0;
 
             io.sockets.in(data.roomid).emit('BackStartGame', true);
         });
 
         // Init game handle
         socket.on('InitGame', function (data) {
+            if(Rooms[data.roomid] == undefined)
+                return;
+            if (Rooms[data.roomid].users[data.userServerId] == undefined)
+                return;
             socket.join(data.roomid);
-
-            socket.emit('BackInitGame', Rooms[data.roomid].users);
+            Rooms[data.roomid].connectedUsers++;
+            if(Rooms[data.roomid].userCounter == Rooms[data.roomid].connectedUsers)
+                io.sockets.in(data.roomid).emit('BackInitGame', Rooms[data.roomid].users);
         });
 
         // Game handle
         socket.on('Game', function (data) {
+            if(Rooms[data.roomid] == undefined)
+                return;
+            if (Rooms[data.roomid].users[data.userServerId] == undefined)
+                return;
             if (Rooms[data.roomid].users[data.userServerId].iskill == 1) {
                 socket.emit('Err', 5);
                 return;
@@ -253,18 +267,22 @@ function ConnectUser() {
                 else
                     Rooms[data.roomid].reinround--;
 
+                Rooms[data.roomid].users[user.userServerId].iskill = 1;
                 if (Rooms[data.roomid].blinround == 0) {
                     Rooms[data.roomid].recount++;
+                    io.sockets.in(data.roomid).emit("EndRound");
                     StartRound(data.roomid);
-                    socket.emit("StartNewRound", Rooms[data.roomid].users);
+                    utils.sleep(5000);
+                    io.sockets.in(data.roomid).emit("StartNewRound", Rooms[data.roomid]);
                 }
                 else if (Rooms[data.roomid].reinround == 0) {
+                    io.sockets.in(data.roomid).emit("EndRound");
                     Rooms[data.roomid].blcount++;
                     StartRound(data.roomid);
-                    socket.emit("StartNewRound", Rooms[data.roomid].users);
+                    utils.sleep(5000);
+                    io.sockets.in(data.roomid).emit("StartNewRound", Rooms[data.roomid]);
                 }
-                Rooms[data.roomid].users[user.userServerId].iskill = 1;
-            }
+        }
         });
     });
 }

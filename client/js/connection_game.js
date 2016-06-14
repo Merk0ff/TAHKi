@@ -35,25 +35,35 @@ function ConnectionInit() {
         });
         players[mydata.userid].SetCamera();
         renderScene();
-        players[mydata.userid].SetCamera();
-        //timerConnection = setInterval(Update, 30);
-        //timerPlayer = setInterval(UpdateKeyboard, 20);
+        timerConnection = setInterval(Update, 20);
+        timerPlayer = setInterval(UpdateKeyboard, 20);
     });
     socket.on("BackDiscoGame", function (data) {
         RemovePlayer(data);
+    });
+    socket.on("EndRound", function (data) {
+        clearInterval(timerConnection);
+        clearInterval(timerPlayer);
     });
     socket.on("BackShoot", function (data) {
         if (data == mydata.userid) {
             $("#splash").text("You died");
             $("#splash").fadeIn("slow");
             clearInterval(timerConnection);
+            clearInterval(timerPlayer);
         }
         HidePlayer(data);
     });
-    socket.on("StartNewRound", function () {
-        for (var i = 0; i < data.length; i++) {
-            ShowPlayer(data[i].userid);
-            players[data[i].userid].SetPosition(data[i].coord);
+    socket.on("StartNewRound", function (data) {
+        for (var i = 0; i < data.users.length; i++) {
+            ShowPlayer(data.users[i].userid);
+            players[data.users[i].userid].SetPosition(data.users[i].coord);
+            players[data.users[i].userid].Reset();
+            clearInterval(timerConnection);
+            clearInterval(timerPlayer);
+            timerConnection = setInterval(Update, 20);
+            timerPlayer = setInterval(UpdateKeyboard, 20);
+            $("#splash").fadeOut("slow");
         }
     });
 
