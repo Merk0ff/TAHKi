@@ -82,6 +82,7 @@ function StartRound(roomid) {
 
         Rooms[roomid].users[i].iskill = 0;
         Rooms[roomid].users[i].timer = 5000;
+        Rooms[roomid].users[i].rotation = 0;
     }
     Rooms[roomid].blinround = Rooms[roomid].blteam;
     Rooms[roomid].reinround = Rooms[roomid].reteam;
