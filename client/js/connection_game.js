@@ -36,8 +36,8 @@ function ConnectionInit() {
         players[mydata.userid].SetCamera();
         renderScene();
         players[mydata.userid].SetCamera();
-        timerConnection = setInterval(Update, 30);
-        timerPlayer = setInterval(UpdateKeyboard, 20);
+        //timerConnection = setInterval(Update, 30);
+        //timerPlayer = setInterval(UpdateKeyboard, 20);
     });
     socket.on("BackDiscoGame", function (data) {
         RemovePlayer(data);
@@ -67,6 +67,7 @@ function ConnectionInit() {
             }
         }
     });
+
     $("#splash").fadeOut("slow");
 }
 
