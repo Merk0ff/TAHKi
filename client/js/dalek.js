@@ -27,16 +27,10 @@ Dalek.prototype.SetPosition = function (new_position) {
     this.Model.position.z = new_position.y;
 };
 
-Dalek.prototype.Reset = function()
-{
-    this.Speed = 1.0;
-    this.Look = new THREE.Vector3(0, 0, this.Speed);
-}
-
 Dalek.prototype.Destroy = function()
 {
     scene.remove(this.Model);   
-}
+};
 
 Dalek.prototype.GetPosition = function () {
     return VecSet2(this.Model.position.x, this.Model.position.z);

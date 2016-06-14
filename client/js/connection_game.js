@@ -61,7 +61,7 @@ function ConnectionInit() {
         for (var i = 0; i < data.users.length; i++) {
             ShowPlayer(data.users[i].userid);
             players[data.users[i].userid].SetPosition(data.users[i].coord);
-            players[data.users[i].userid].Reset();
+            players[data.users[i].userid].SetRotate(data.users[i].rotation);
         }
         timerConnection = setInterval(Update, 20);
         timerPlayer = setInterval(UpdateKeyboard, 20);
