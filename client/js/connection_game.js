@@ -37,6 +37,9 @@ function ConnectionInit() {
         renderScene();
         timerConnection = setInterval(Update, 20);
         timerPlayer = setInterval(UpdateKeyboard, 20);
+
+        $("#fullscreen").fadeOut("slow");
+        $("#score").fadeIn("slow");
     });
     socket.on("BackDiscoGame", function (data) {
         RemovePlayer(data);
@@ -48,7 +51,7 @@ function ConnectionInit() {
     socket.on("BackShoot", function (data) {
         if (data == mydata.userid) {
             $("#splash").text("You died");
-            $("#splash").fadeIn("slow");
+            $("#fullscreen").fadeIn("slow");
             clearInterval(timerConnection);
             clearInterval(timerPlayer);
         }
@@ -59,12 +62,13 @@ function ConnectionInit() {
             ShowPlayer(data.users[i].userid);
             players[data.users[i].userid].SetPosition(data.users[i].coord);
             players[data.users[i].userid].Reset();
-            clearInterval(timerConnection);
-            clearInterval(timerPlayer);
-            timerConnection = setInterval(Update, 20);
-            timerPlayer = setInterval(UpdateKeyboard, 20);
-            $("#splash").fadeOut("slow");
         }
+        timerConnection = setInterval(Update, 20);
+        timerPlayer = setInterval(UpdateKeyboard, 20);
+        players[mydata.userid].SetCamera();
+        $("#fullscreen").fadeOut("slow");
+        $("#score_red").text(data.recount);
+        $("#score_blue").text(data.blcount);
     });
 
     socket.on('BackGame', function (data) {
@@ -77,8 +81,6 @@ function ConnectionInit() {
             }
         }
     });
-
-    $("#splash").fadeOut("slow");
 }
 
 function Response() {
