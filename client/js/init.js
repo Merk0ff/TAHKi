@@ -196,7 +196,7 @@ function Init() {
     scene.add(light_dir3);
 
     var imgLoader = new THREE.ImageLoader();
-    imgLoader.load("./resources/models/mineways/mirage/cmap_merged.png", function (e) {
+    imgLoader.load("./resources/models/mineways/mirage/cmap_merged_kek.png", function (e) {
         collision_map = getImageData(e);
     });
 

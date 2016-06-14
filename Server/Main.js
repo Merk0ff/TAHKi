@@ -257,6 +257,10 @@ function ConnectUser() {
                 return;
             }
 
+            if (Rooms[data.roomid].reteam == 0 || Rooms[data.roomid].blteam == 0) {
+                io.sockets.in(data.roomid).emit('GG', Rooms[data.roomid]);
+                return;
+            }
             Rooms[data.roomid].users[data.userServerId].coord = data.coord;
             Rooms[data.roomid].users[data.userServerId].rotation = data.rotation;
             io.sockets.in(data.roomid).emit('BackGame', Rooms[data.roomid].users);
