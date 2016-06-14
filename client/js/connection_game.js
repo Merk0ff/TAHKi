@@ -2,6 +2,7 @@ var socket; // Socket by socket.io for game
 var mydata = {}; // Data of 'this' player
 var timerPlayer;
 var timerConnection;
+var gameEnded = false;
 
 function ConnectionInit() {
     socket = io(window.location.origin);
@@ -30,7 +31,7 @@ function ConnectionInit() {
         window.addEventListener("wheel", onWheel);
         $(window).resize(function () {
             renderer.setSize(window.innerWidth, window.innerHeight);
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+            camera = new THREE.PerspectiveCamera(FOV, window.innerWidth / window.innerHeight, 0.1, 10000);
             players[mydata.userid].SetCamera();
         });
         players[mydata.userid].SetCamera();
@@ -48,7 +49,20 @@ function ConnectionInit() {
         clearInterval(timerConnection);
         clearInterval(timerPlayer);
     });
+    socket.on("GG", function (data) {
+        gameEnded=true;
+        clearInterval(timerConnection);
+        clearInterval(timerPlayer);
+        if (data.recount > 7)
+            $("#splash").text("GG. Red wins");
+        else if (data.blcount > 7)
+            $("#splash").text("GG. Blue wins");
+        $("#fullscreen").fadeIn("slow");
+        setTimeout(GoIndex(), 5000);
+    });
     socket.on("BackShoot", function (data) {
+        if(gameEnded)
+            return;
         if (data == mydata.userid) {
             $("#splash").text("You died");
             $("#fullscreen").fadeIn("slow");
@@ -58,6 +72,8 @@ function ConnectionInit() {
         HidePlayer(data);
     });
     socket.on("StartNewRound", function (data) {
+        if(gameEnded)
+            return;
         for (var i = 0; i < data.users.length; i++) {
             ShowPlayer(data.users[i].userid);
             players[data.users[i].userid].SetPosition(data.users[i].coord);
@@ -66,6 +82,8 @@ function ConnectionInit() {
         timerConnection = setInterval(Update, 20);
         timerPlayer = setInterval(UpdateKeyboard, 20);
         players[mydata.userid].SetCamera();
+        if(gameEnded)
+            return;
         $("#fullscreen").fadeOut("slow");
         $("#score_red").text(data.recount);
         $("#score_blue").text(data.blcount);

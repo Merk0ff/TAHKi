@@ -256,6 +256,7 @@ function ConnectUser() {
                 socket.emit('Err', 5);
                 return;
             }
+
             Rooms[data.roomid].users[data.userServerId].coord = data.coord;
             Rooms[data.roomid].users[data.userServerId].rotation = data.rotation;
             io.sockets.in(data.roomid).emit('BackGame', Rooms[data.roomid].users);
@@ -293,6 +294,10 @@ function ConnectUser() {
                     io.sockets.in(data.roomid).emit("StartNewRound", Rooms[data.roomid]);
                 }
 
+                if (Rooms[data.roomid].recount > 7 || Rooms[data.roomid].blcount > 7) {
+                    io.sockets.in(data.roomid).emit('GG', Rooms[data.roomid]);
+                    return;
+                }
                 Rooms[data.roomid].users[data.userServerId].timer = new Date().getTime();
             }
         });

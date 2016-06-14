@@ -72,3 +72,7 @@ function DetectCollision(map, size, x, y) {
      */
     return true;
 }
+function GoIndex()
+{
+    window.location.replace(window.location.origin);
+}

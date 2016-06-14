@@ -8,6 +8,7 @@ var light_dir3; // Threejs global direction lightning
 var cube; // NEED TO REMOVE
 var collision_map; // Collision map for map
 var stats; // Fps
+var FOV = 59;
 
 var model_red; // Model of red Dalek model
 var model_blue; // Model of blue Dalek model
@@ -160,7 +161,7 @@ function Init() {
     document.body.appendChild(stats.dom);
     document.body.style.cursor = 'default';
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera = new THREE.PerspectiveCamera(FOV, window.innerWidth / window.innerHeight, 0.1, 10000);
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(1, 255);
     renderer.setSize(window.innerWidth, window.innerHeight);
