@@ -51,7 +51,7 @@ var DetectCollision = function (x0, x1, y0, y1, roomid, userServerId) {
     var error = deltaX - deltaY;
     while (Math.abs(x0 - x1) > 2 || Math.abs(y0 - y1) > 2) {
         for (var i = 0; i < userCounter1; i++) {
-            if(utils.getPixel(cmap_mirage, cmap_mirage_w, Math.round(x0 / 7.4), Math.round(y0 / 7.4)) == 0)
+            if (utils.getPixel(cmap_mirage, cmap_mirage_w, Math.round(x0 / 7.4), Math.round(y0 / 7.4)) == 0)
                 return -1;
             else if (x0 > Rooms[roomid].users[usersid[i]].coord.x - 20 && x0 < Rooms[roomid].users[usersid[i]].coord.x + 20
                 && y0 > Rooms[roomid].users[usersid[i]].coord.y - 20 && y0 < Rooms[roomid].users[usersid[i]].coord.y + 20) {
@@ -81,6 +81,7 @@ function StartRound(roomid) {
             Rooms[roomid].users[i].coord = StartCoords[1];
 
         Rooms[roomid].users[i].iskill = 0;
+        Rooms[roomid].users[i].timer = 5000;
     }
     Rooms[roomid].blinround = Rooms[roomid].blteam;
     Rooms[roomid].reinround = Rooms[roomid].reteam;
@@ -218,30 +219,35 @@ function ConnectUser() {
 
         // Start game handle
         socket.on('StartGame', function (data) {
+            if (!(Rooms[data.roomid].reteam > 0 && Rooms[data.roomid].blteam > 0)) {
+                io.sockets.in(data.roomid).emit('Err', 6);
+                return;
+            }
+
             StartRound(data.roomid);
             Rooms[data.roomid].blcount = 0;
             Rooms[data.roomid].recount = 0;
             Rooms[data.roomid].rounds = 0;
             Rooms[data.roomid].connectedUsers = 0;
-
             io.sockets.in(data.roomid).emit('BackStartGame', true);
+
         });
 
         // Init game handle
         socket.on('InitGame', function (data) {
-            if(Rooms[data.roomid] == undefined)
+            if (Rooms[data.roomid] == undefined)
                 return;
             if (Rooms[data.roomid].users[data.userServerId] == undefined)
                 return;
             socket.join(data.roomid);
             Rooms[data.roomid].connectedUsers++;
-            if(Rooms[data.roomid].userCounter == Rooms[data.roomid].connectedUsers)
+            if (Rooms[data.roomid].userCounter == Rooms[data.roomid].connectedUsers)
                 io.sockets.in(data.roomid).emit('BackInitGame', Rooms[data.roomid].users);
         });
 
         // Game handle
         socket.on('Game', function (data) {
-            if(Rooms[data.roomid] == undefined)
+            if (Rooms[data.roomid] == undefined)
                 return;
             if (Rooms[data.roomid].users[data.userServerId] == undefined)
                 return;
@@ -259,7 +265,10 @@ function ConnectUser() {
             var user = DetectCollision(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
                 data.coord.y, data.coord.y + 150 * Math.cos(data.rotation), data.roomid, data.userServerId);
 
-            if (user != -1) {
+            if (user != -1 &&
+                new Date().getTime() - Rooms[data.roomid].users[data.userServerId].timer >= 3000 &&
+                Rooms[data.roomid].users[data.userServerId].iskill == 0) {
+
                 io.sockets.in(data.roomid).emit('BackShoot', user.userid);
 
                 if (Rooms[data.roomid].users[user.userServerId].team == 1)
@@ -282,7 +291,9 @@ function ConnectUser() {
                     utils.sleep(5000);
                     io.sockets.in(data.roomid).emit("StartNewRound", Rooms[data.roomid]);
                 }
-        }
+
+                Rooms[data.roomid].users[data.userServerId].timer = new Date().getTime();
+            }
         });
     });
 }

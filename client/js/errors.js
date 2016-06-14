@@ -9,9 +9,11 @@ function GetErrorExeption(code) {
         case 3:
             return "Your nick is already used.\nPlease change.";
         case 4:
-            return "This lobby uncreated."
+            return "This lobby uncreated.";
         case 5:
-            return "You died."
+            return "You died.";
+        case 6:
+            return "It's not enough players to start.";
     }
 }
 function InitErrors() {
