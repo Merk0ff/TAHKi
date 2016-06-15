@@ -296,6 +296,10 @@ function ConnectUser() {
                 Rooms[data.roomid].users[user.userServerId].iskill = 1;
                 if (Rooms[data.roomid].blinround == 0) {
                     Rooms[data.roomid].recount++;
+                    if (Rooms[data.roomid].recount > 7) {
+                        io.sockets.in(data.roomid).emit('GG', "Red");
+                        return;
+                    }
                     io.sockets.in(data.roomid).emit("EndRound");
                     StartRound(data.roomid);
                     utils.sleep(5000);
@@ -305,19 +309,16 @@ function ConnectUser() {
                 else if (Rooms[data.roomid].reinround == 0) {
                     io.sockets.in(data.roomid).emit("EndRound");
                     Rooms[data.roomid].blcount++;
+                    if (Rooms[data.roomid].blcount > 7) {
+                        io.sockets.in(data.roomid).emit('GG', "Blue");
+                        return;
+                    }
                     StartRound(data.roomid);
                     utils.sleep(5000);
                     Rooms[data.roomid].newrounddelta = new Date().getTime();
                     io.sockets.in(data.roomid).emit("StartNewRound", Rooms[data.roomid]);
                 }
-
-                if (Rooms[data.roomid].recount > 7 || Rooms[data.roomid].blcount > 7) {
-                    io.sockets.in(data.roomid).emit('GG', Rooms[data.roomid]);
-                    return;
-                }
-
             }
-
             Rooms[data.roomid].users[data.userServerId].timer = new Date().getTime();
         });
     });
