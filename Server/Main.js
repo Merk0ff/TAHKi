@@ -45,15 +45,15 @@ var DetectCollision = function (x0, x1, y0, y1, roomid, userServerId) {
             }
     var deltaX = Math.abs(x1 - x0);
     var deltaY = Math.abs(y1 - y0);
-    var signX = x0 < x1 ? 1 : -1;
-    var signY = y0 < y1 ? 1 : -1;
+    var signX = x0 < x1 ? 0.5 : -0.5;
+    var signY = y0 < y1 ? 0.5 : -0.5;
     var error = deltaX - deltaY;
     while (Math.abs(x0 - x1) > 2 || Math.abs(y0 - y1) > 2) {
         for (var i = 0; i < userCounter1; i++) {
             if (utils.getPixel(cmap_mirage, cmap_mirage_w, Math.round(x0 / 7.4), Math.round(y0 / 7.4)) == 0)
                 return -1;
-            else if (x0 > Rooms[roomid].users[usersid[i]].coord.x - 20 && x0 < Rooms[roomid].users[usersid[i]].coord.x + 20
-                && y0 > Rooms[roomid].users[usersid[i]].coord.y - 20 && y0 < Rooms[roomid].users[usersid[i]].coord.y + 20) {
+            else if (x0 > Rooms[roomid].users[usersid[i]].coord.x - 17 && x0 < Rooms[roomid].users[usersid[i]].coord.x + 17
+                && y0 > Rooms[roomid].users[usersid[i]].coord.y - 17 && y0 < Rooms[roomid].users[usersid[i]].coord.y + 17) {
                 return Rooms[roomid].users[usersid[i]];
             }
         }
@@ -282,7 +282,7 @@ function ConnectUser() {
             var date = new Date().getTime();
 
             if (user != -1 &&
-                date - Rooms[data.roomid].users[data.userServerId].timer >= 5000 &&
+                date - Rooms[data.roomid].users[data.userServerId].timer >= 3000 &&
                 date - Rooms[data.roomid].newrounddelta >= 5000 &&
                 Rooms[data.roomid].users[data.userServerId].iskill == 0) {
 
