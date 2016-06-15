@@ -16,6 +16,7 @@
     <script type="text/javascript" src="js/init.js"></script>
     <script type="text/javascript" src="js/anim.js"></script>
     <script type="text/javascript" src="js/dalek.js"></script>
+    <script type="text/javascript" src="js/particle.js"></script>
     <script type="text/javascript" src="js/connection_game.js"></script>
     <script type="text/javascript" src="js/errors.js"></script>
     <script type="text/javascript" src="js/input.js"></script>
@@ -38,6 +39,64 @@
             <p id="splash_text">LOADING<br/>PLEASE WAIT</p>
             <input type="button" class="button" value="Go to main menu" id="btn_index" style="display: none;">
         </div>
+    </div>
+    <div id="stats" style="display: none">
+        <table class="stats_table">
+            <tr>
+                <td id="red_player_1_n" class="stats_name_red">-</td>
+                <td id="red_player_1_k" class="stats_kills_red">0</td>
+                <td id="red_player_1_d" class="stats_deaths_red">0</td>
+            </tr>
+            <tr>
+                <td id="red_player_2_n" class="stats_name_red">-</td>
+                <td id="red_player_2_k" class="stats_kills_red">0</td>
+                <td id="red_player_2_d" class="stats_deaths_red">0</td>
+            </tr>
+            <tr>
+                <td id="red_player_3_n" class="stats_name_red">-</td>
+                <td id="red_player_3_k" class="stats_kills_red">0</td>
+                <td id="red_player_3_d" class="stats_deaths_red">0</td>
+            </tr>
+            <tr>
+                <td id="red_player_4_n" class="stats_name_red">-</td>
+                <td id="red_player_4_k" class="stats_kills_red">0</td>
+                <td id="red_player_4_d" class="stats_deaths_red">0</td>
+            </tr>
+            <tr>
+                <td id="red_player_5_n" class="stats_name_red">-</td>
+                <td id="red_player_5_k" class="stats_kills_red">0</td>
+                <td id="red_player_5_d" class="stats_deaths_red">0</td>
+            </tr>
+
+            <tr class="table_spaicing">
+            </tr>
+
+            <tr>
+                <td id="blue_player_1_n" class="stats_name_blue">-</td>
+                <td id="blue_player_1_k" class="stats_kills_blue">0</td>
+                <td id="blue_player_1_d" class="stats_deaths_blue">0</td>
+            </tr>
+            <tr>
+                <td id="blue_player_2_n" class="stats_name_blue">-</td>
+                <td id="blue_player_2_k" class="stats_kills_blue">0</td>
+                <td id="blue_player_2_d" class="stats_deaths_blue">0</td>
+            </tr>
+            <tr>
+                <td id="blue_player_3_n" class="stats_name_blue">-</td>
+                <td id="blue_player_3_k" class="stats_kills_blue">0</td>
+                <td id="blue_player_3_d" class="stats_deaths_blue">0</td>
+            </tr>
+            <tr>
+                <td id="blue_player_4_n" class="stats_name_blue">-</td>
+                <td id="blue_player_4_k" class="stats_kills_blue">0</td>
+                <td id="blue_player_4_d" class="stats_deaths_blue">0</td>
+            </tr>
+            <tr>
+                <td id="blue_player_5_n" class="stats_name_blue">-</td>
+                <td id="blue_player_5_k" class="stats_kills_blue">0</td>
+                <td id="blue_player_5_d" class="stats_deaths_blue">0</td>
+            </tr>
+        </table>
     </div>
     <div id="score" style="display: none;">
         <table class="score_table" border="1" align="center">

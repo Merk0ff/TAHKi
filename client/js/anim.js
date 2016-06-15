@@ -11,6 +11,7 @@ function KeyPress(e) {
             players[mydata.userid].SetCamera();
             break;
         case KEY_CODE.SPACE:
+            //AddParticle("blue", camera.position, players[mydata.userid].Look, 239239);
             //BulletLaunch(VecSet2(Player.Model.position.x, players[mydata.userid].Model.position.z), VecSet2(players[mydata.userid].Look.x, players[mydata.userid].Look.z));
             socket.emit("Shoot", mydata);
             break;
@@ -18,7 +19,7 @@ function KeyPress(e) {
 }
 
 function UpdateKeyboard() {
-    console.log("updk");
+    //console.log("updk");
     if (Keys[KEY_CODE.UP]) {
         players[mydata.userid].Move();
         players[mydata.userid].SetCamera();
@@ -39,7 +40,8 @@ function UpdateKeyboard() {
     }
 }
 function Update() {
-    console.log("upd");
+    //console.log("upd");
     //players[mydata.userid].Update();
     Response();
+    UpdatePatricles();
 }

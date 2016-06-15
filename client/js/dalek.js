@@ -4,16 +4,16 @@ function Dalek(type) {
     this.Look = new THREE.Vector3(0, 0, this.Speed);
     this.RelativeCam = new THREE.Vector3(0, 0, 0);
     /*
-    this.Light = new THREE.SpotLight(0xff0000, 1, 300, 0.8, 0.8);
-    this.Light.position.set(1, 1, 1);
-    this.Light.castShadow = true;
-    this.Light.shadow.mapSize.width = 1024;
-    this.Light.shadow.mapSize.height = 1024;
-    this.LightTarget = new THREE.Object3D();
-    this.LightTarget.position = new THREE.Vector3(0, 0, 0);
-    this.Light.target = this.LightTarget;
-    this.LightHelper = new THREE.SpotLightHelper(this.Light);
-    */
+     this.Light = new THREE.SpotLight(0xff0000, 1, 300, 0.8, 0.8);
+     this.Light.position.set(1, 1, 1);
+     this.Light.castShadow = true;
+     this.Light.shadow.mapSize.width = 1024;
+     this.Light.shadow.mapSize.height = 1024;
+     this.LightTarget = new THREE.Object3D();
+     this.LightTarget.position = new THREE.Vector3(0, 0, 0);
+     this.Light.target = this.LightTarget;
+     this.LightHelper = new THREE.SpotLightHelper(this.Light);
+     */
     if (type == "red")
         this.Model = model_red.clone();
     else if (type == "blue")
@@ -27,9 +27,8 @@ Dalek.prototype.SetPosition = function (new_position) {
     this.Model.position.z = new_position.y;
 };
 
-Dalek.prototype.Destroy = function()
-{
-    scene.remove(this.Model);   
+Dalek.prototype.Destroy = function () {
+    scene.remove(this.Model);
 };
 
 Dalek.prototype.GetPosition = function () {

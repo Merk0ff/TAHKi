@@ -12,7 +12,8 @@ var KEY_CODE = {
     PLUS: 107,
     M: 109,
     L: 108,
-    SPACE: 32
+    SPACE: 32,
+    DOTA: 192
 };
 
 function MouseUp(e) {

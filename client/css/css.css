@@ -72,8 +72,57 @@ li {
     red 5px 5px 0;
 }
 
-.score_table
-{
+.stats_table {
+    position: absolute;
+    border: 3px solid white;
+    border-collapse: collapse;
+    color: white;
+    text-align: center;
+    width: 100%;
+}
+
+.table_spaicing {
+    border: 0px solid white;
+    height: 30px;
+}
+
+.stats_name_blue {
+    background-color: blue;
+    border: 3px solid white;
+    width: 80%;
+}
+
+.stats_kills_blue {
+    background-color: blue;
+    border: 3px solid white;
+    width: 10%;
+}
+
+.stats_deaths_blue {
+    background-color: blue;
+    border: 3px solid white;
+    width: 10%;
+}
+
+.stats_name_red {
+    background-color: red;
+    border: 3px solid white;
+    width: 80%;
+}
+
+.stats_kills_red {
+    background-color: red;
+    border: 3px solid white;
+    width: 10%;
+}
+
+.stats_deaths_red {
+    background-color: red;
+    border: 3px solid white;
+    width: 10%;
+}
+
+.score_table {
     left: 44%;
     height: 5%;
     position: absolute;
@@ -99,11 +148,12 @@ li {
     border-color: gold;
 }
 
-#score_red{
+#score_red {
     width: 50%;
     background-color: red;
 }
-#score_blue{
+
+#score_blue {
     width: 50%;
     background-color: blue;
 }
@@ -113,7 +163,7 @@ li {
     color: white;
 }
 
-#splash{
+#splash {
     position: absolute;
     top: 40%;
     height: 20%;
@@ -129,4 +179,13 @@ li {
     height: 100%;
     text-align: center;
     color: snow;
+}
+
+#stats
+{
+    position: absolute;
+    width: 60%;
+    height: 60%;
+    top: 20%;
+    left: 20%;
 }

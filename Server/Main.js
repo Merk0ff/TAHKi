@@ -45,8 +45,8 @@ var DetectCollision = function (x0, x1, y0, y1, roomid, userServerId) {
             }
     var deltaX = Math.abs(x1 - x0);
     var deltaY = Math.abs(y1 - y0);
-    var signX = x0 < x1 ? 0.5 : -0.5;
-    var signY = y0 < y1 ? 0.5 : -0.5;
+    var signX = x0 < x1 ? 1 : -1;
+    var signY = y0 < y1 ? 1 : -1;
     var error = deltaX - deltaY;
     while (Math.abs(x0 - x1) > 2 || Math.abs(y0 - y1) > 2) {
         for (var i = 0; i < userCounter1; i++) {
@@ -260,6 +260,7 @@ function ConnectUser() {
 
         // Game handle
         socket.on('Game', function (data) {
+            var now = new Date().getTime();
             if (Rooms[data.roomid] == undefined)
                 return;
 
@@ -271,66 +272,75 @@ function ConnectUser() {
                 return;
             }
 
-            if (Rooms[data.roomid].reteam == 0 || Rooms[data.roomid].blteam == 0) {
-                io.sockets.in(data.roomid).emit('GG', Rooms[data.roomid]);
+            if (Rooms[data.roomid].reteam == 0) {
+                io.sockets.in(data.roomid).emit('GG', "Blue");
                 return;
             }
-
+            else if (Rooms[data.roomid].blteam == 0) {
+                io.sockets.in(data.roomid).emit('GG', "Red");
+                return;
+            }
+            Rooms[data.roomid].users[data.userServerId].ping = now - data.time;
             Rooms[data.roomid].users[data.userServerId].coord = data.coord;
             Rooms[data.roomid].users[data.userServerId].rotation = data.rotation;
+            io.sockets.in(data.roomid).emit('StatsUpdate', Rooms[data.roomid].users);
             io.sockets.in(data.roomid).emit('BackGame', Rooms[data.roomid].users);
         });
 
         // Shoot handle
         socket.on('Shoot', function (data) {
-            var user = DetectCollision(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
-                data.coord.y, data.coord.y + 150 * Math.cos(data.rotation), data.roomid, data.userServerId);
             var date = new Date().getTime();
-
-            if (user != -1 &&
-                date - Rooms[data.roomid].users[data.userServerId].timer >= 3000 &&
+            if (date - Rooms[data.roomid].users[data.userServerId].timer >= 3000 &&
                 date - Rooms[data.roomid].newrounddelta >= 5000 &&
                 Rooms[data.roomid].users[data.userServerId].iskill == 0) {
+                var user = DetectCollision(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
+                    data.coord.y, data.coord.y + 150 * Math.cos(data.rotation), data.roomid, data.userServerId);
 
-                io.sockets.in(data.roomid).emit('BackShoot', {killed: user.userid, killer: data.userid});
+                if (user != -1) {
 
-                Rooms[data.roomid].users[data.userServerId].kills++;
-                Rooms[data.roomid].users[user.userServerId].deth++;
+                    io.sockets.in(data.roomid).emit('BackShoot', {killed: user.userid, killer: data.userid});
 
-                io.sockets.in(data.roomid).emit('StatsUpdate', Rooms[data.roomid].users);
+                    Rooms[data.roomid].users[data.userServerId].kills++;
+                    Rooms[data.roomid].users[user.userServerId].deth++;
 
-                if (Rooms[data.roomid].users[user.userServerId].team == 1)
-                    Rooms[data.roomid].blinround--;
-                else
-                    Rooms[data.roomid].reinround--;
+                    io.sockets.in(data.roomid).emit('StatsUpdate', Rooms[data.roomid].users);
 
-                Rooms[data.roomid].users[user.userServerId].iskill = 1;
-                if (Rooms[data.roomid].blinround == 0) {
-                    Rooms[data.roomid].recount++;
-                    if (Rooms[data.roomid].recount > 7) {
-                        io.sockets.in(data.roomid).emit('GG', "Red");
-                        return;
+                    if (Rooms[data.roomid].users[user.userServerId].team == 1)
+                        Rooms[data.roomid].blinround--;
+                    else
+                        Rooms[data.roomid].reinround--;
+
+                    Rooms[data.roomid].users[user.userServerId].iskill = 1;
+                    if (Rooms[data.roomid].blinround == 0) {
+                        Rooms[data.roomid].recount++;
+                        if (Rooms[data.roomid].recount > 7) {
+                            io.sockets.in(data.roomid).emit('GG', "Red");
+                            return;
+                        }
+                        io.sockets.in(data.roomid).emit("EndRound");
+                        StartRound(data.roomid);
+                        utils.sleep(5000);
+                        Rooms[data.roomid].newrounddelta = new Date().getTime();
+                        io.sockets.in(data.roomid).emit("StartNewRound", Rooms[data.roomid]);
                     }
-                    io.sockets.in(data.roomid).emit("EndRound");
-                    StartRound(data.roomid);
-                    utils.sleep(5000);
-                    Rooms[data.roomid].newrounddelta = new Date().getTime();
-                    io.sockets.in(data.roomid).emit("StartNewRound", Rooms[data.roomid]);
-                }
-                else if (Rooms[data.roomid].reinround == 0) {
-                    io.sockets.in(data.roomid).emit("EndRound");
-                    Rooms[data.roomid].blcount++;
-                    if (Rooms[data.roomid].blcount > 7) {
-                        io.sockets.in(data.roomid).emit('GG', "Blue");
-                        return;
+                    else if (Rooms[data.roomid].reinround == 0) {
+                        io.sockets.in(data.roomid).emit("EndRound");
+                        Rooms[data.roomid].blcount++;
+                        if (Rooms[data.roomid].blcount > 7) {
+                            io.sockets.in(data.roomid).emit('GG', "Blue");
+                            return;
+                        }
+                        StartRound(data.roomid);
+                        utils.sleep(5000);
+                        Rooms[data.roomid].newrounddelta = new Date().getTime();
+                        io.sockets.in(data.roomid).emit("StartNewRound", Rooms[data.roomid]);
                     }
-                    StartRound(data.roomid);
-                    utils.sleep(5000);
-                    Rooms[data.roomid].newrounddelta = new Date().getTime();
-                    io.sockets.in(data.roomid).emit("StartNewRound", Rooms[data.roomid]);
                 }
+                else {
+                    io.sockets.in(data.roomid).emit('BackShoot', {killed: -1, killer: data.userid});
+                }
+                Rooms[data.roomid].users[data.userServerId].timer = new Date().getTime();
             }
-            Rooms[data.roomid].users[data.userServerId].timer = new Date().getTime();
         });
     });
 }

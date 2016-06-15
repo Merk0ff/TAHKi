@@ -15,11 +15,23 @@ function ConnectionInit() {
     mydata.userServerId = $.cookie("userServerId");
     socket.emit("InitGame", mydata);
     socket.on('BackInitGame', function (data) {
+        var ired = 1;
+        var iblue = 1;
         for (var i = 0; i < data.length; i++) {
-            if (data[i].team == 0)
+            if (data[i].team == 0) {
+                $("#red_player_" + ired + "_n").text(data[i].userid);
+                $("#red_player_" + ired + "_k").text(data[i].kills);
+                $("#red_player_" + ired + "_d").text(data[i].deth);
+                ired++;
                 AddPlayer(data[i].userid, "red");
-            else if (data[i].team == 1)
+            }
+            else if (data[i].team == 1) {
                 AddPlayer(data[i].userid, "blue");
+                $("#blue_player_" + iblue + "_n").text(data[i].userid);
+                $("#blue_player_" + iblue + "_k").text(data[i].kills);
+                $("#blue_player_" + iblue + "_d").text(data[i].deth);
+                iblue++;
+            }
             players[data[i].userid].SetPosition(data[i].coord);
         }
         window.addEventListener("mousemove", MouseMove);
@@ -27,6 +39,15 @@ function ConnectionInit() {
         window.addEventListener("mousedown", MouseDown);
         window.addEventListener("keyup", KeyUp);
         window.addEventListener("keydown", KeyDown);
+        window.addEventListener("keypress", KeyPress);
+        window.addEventListener("keydown", function (e) {
+            if (e.keyCode == KEY_CODE.DOTA)
+                $("#stats").show();
+        });
+        window.addEventListener("keyup", function (e) {
+            if (e.keyCode == KEY_CODE.DOTA)
+                $("#stats").hide();
+        });
         window.addEventListener("keypress", KeyPress);
         window.addEventListener("wheel", onWheel);
         $(window).resize(function () {
@@ -53,24 +74,27 @@ function ConnectionInit() {
         gameEnded = true;
         clearInterval(timerConnection);
         clearInterval(timerPlayer);
-        $("#splash_text").text("GG. "+data+" wins");
+        $("#splash_text").text("GG. " + data + " wins");
         $("#fullscreen").fadeIn("fast");
         $("#btn_index").fadeIn("fast");
-        $("#btn_index").click(function()
-        {
+        $("#btn_index").click(function () {
             window.location.replace(window.location.origin);
         });
     });
     socket.on("BackShoot", function (data) {
         if (gameEnded)
             return;
-        if (data == mydata.userid) {
+        AddParticle(players[data.killer].Model.position.clone(), players[data.killer].Look.clone(), 3);
+        if (data.killed == -1)
+            return;
+        console.log(data.killer + " ̵͇̿̿/̿'̿ ̿  " + data.killed);
+        if (data.killed == mydata.userid) {
             $("#splash_text").text("You died");
             $("#fullscreen").fadeIn("slow");
             clearInterval(timerConnection);
             clearInterval(timerPlayer);
         }
-        HidePlayer(data);
+        HidePlayer(data.killed);
     });
     socket.on("StartNewRound", function (data) {
         if (gameEnded)
@@ -88,6 +112,36 @@ function ConnectionInit() {
         $("#fullscreen").fadeOut("slow");
         $("#score_red").text(data.recount);
         $("#score_blue").text(data.blcount);
+    });
+
+    socket.on('StatsUpdate', function (data) {
+        data.sort(function (a, b) {
+            return a.kills - b.kills;
+        });
+        for (var i = 0; i < 5; i++) {
+            $("#red_player_" + i + "_n").text('-');
+            $("#red_player_" + i + "_k").text(0);
+            $("#red_player_" + i + "_d").text(0);
+            $("#blue_player_" + i + "_n").text('-');
+            $("#blue_player_" + i + "_k").text(0);
+            $("#blue_player_" + i + "_d").text(0);
+        }
+        var ired = 1;
+        var iblue = 1;
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].team == 0) {
+                $("#red_player_" + ired + "_n").text(data[i].userid);
+                $("#red_player_" + ired + "_k").text(data[i].kills);
+                $("#red_player_" + ired + "_d").text(data[i].deth);
+                ired++;
+            }
+            else {
+                $("#blue_player_" + iblue + "_n").text(data[i].userid);
+                $("#blue_player_" + iblue + "_k").text(data[i].kills);
+                $("#blue_player_" + iblue + "_d").text(data[i].deth);
+                iblue++;
+            }
+        }
     });
 
     socket.on('BackGame', function (data) {
