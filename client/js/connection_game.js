@@ -50,21 +50,22 @@ function ConnectionInit() {
         clearInterval(timerPlayer);
     });
     socket.on("GG", function (data) {
-        gameEnded=true;
+        gameEnded = true;
         clearInterval(timerConnection);
         clearInterval(timerPlayer);
-        if (data.recount > 7)
-            $("#splash").text("GG. Red wins");
-        else if (data.blcount > 7)
-            $("#splash").text("GG. Blue wins");
-        $("#fullscreen").fadeIn("slow");
-        setTimeout(GoIndex(), 5000);
+        $("#splash_text").text("GG. "+data+" wins");
+        $("#fullscreen").fadeIn("fast");
+        $("#btn_index").fadeIn("fast");
+        $("#btn_index").click(function()
+        {
+            window.location.replace(window.location.origin);
+        });
     });
     socket.on("BackShoot", function (data) {
-        if(gameEnded)
+        if (gameEnded)
             return;
         if (data == mydata.userid) {
-            $("#splash").text("You died");
+            $("#splash_text").text("You died");
             $("#fullscreen").fadeIn("slow");
             clearInterval(timerConnection);
             clearInterval(timerPlayer);
@@ -72,7 +73,7 @@ function ConnectionInit() {
         HidePlayer(data);
     });
     socket.on("StartNewRound", function (data) {
-        if(gameEnded)
+        if (gameEnded)
             return;
         for (var i = 0; i < data.users.length; i++) {
             ShowPlayer(data.users[i].userid);
@@ -82,7 +83,7 @@ function ConnectionInit() {
         timerConnection = setInterval(Update, 20);
         timerPlayer = setInterval(UpdateKeyboard, 20);
         players[mydata.userid].SetCamera();
-        if(gameEnded)
+        if (gameEnded)
             return;
         $("#fullscreen").fadeOut("slow");
         $("#score_red").text(data.recount);
