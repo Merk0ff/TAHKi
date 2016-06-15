@@ -227,6 +227,12 @@ function ConnectUser() {
             }
 
             StartRound(data.roomid);
+
+            for (var i = 0; i < Rooms[data.roomid].userCounter; i++) {
+                Rooms[data.roomid].users[i].kills = 0;
+                Rooms[data.roomid].users[i].deth = 0;
+            }
+
             Rooms[data.roomid].blcount = 0;
             Rooms[data.roomid].recount = 0;
             Rooms[data.roomid].rounds = 0;
@@ -256,7 +262,7 @@ function ConnectUser() {
         socket.on('Game', function (data) {
             if (Rooms[data.roomid] == undefined)
                 return;
-            
+
             if (Rooms[data.roomid].users[data.userServerId] == undefined)
                 return;
 
@@ -286,7 +292,12 @@ function ConnectUser() {
                 date - Rooms[data.roomid].newrounddelta >= 5000 &&
                 Rooms[data.roomid].users[data.userServerId].iskill == 0) {
 
-                io.sockets.in(data.roomid).emit('BackShoot', user.userid);
+                io.sockets.in(data.roomid).emit('BackShoot', {killed: user.userid, killer: data.userid});
+
+                Rooms[data.roomid].users[data.userServerId].kills++;
+                Rooms[data.roomid].users[user.userServerId].deth++;
+
+                io.sockets.in(data.roomid).emit('StatsUpdate', Rooms[data.roomid].users);
 
                 if (Rooms[data.roomid].users[user.userServerId].team == 1)
                     Rooms[data.roomid].blinround--;
@@ -345,8 +356,8 @@ function SetUpServer() {
     Serverhandler();
     app.use(exp.static('../client'));
 
-    http.listen(25565, function () {
-        console.log('listening on *:25565');
+    http.listen(80, function () {
+        console.log('listening on *:80');
     });
 }
 
