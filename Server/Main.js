@@ -345,8 +345,8 @@ function SetUpServer() {
     Serverhandler();
     app.use(exp.static('../client'));
 
-    http.listen(25565, function () {
-        console.log('listening on *:25565');
+    http.listen(8080, function () {
+        console.log('listening on *:8080');
     });
 }
 
