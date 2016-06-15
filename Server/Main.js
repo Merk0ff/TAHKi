@@ -1,10 +1,9 @@
 var StartCoords = [
     {x: 683, y: 255},
     {x: 172, y: 534}
-];
-// Start coords arry
+]; // Start coords arry
 var utils = require('./Scripts/utils'); // Utils module
-var PNG = require('./Scripts/png-node');
+var PNG = require('./Scripts/png-node'); // Png handle module
 var app; // Express app
 var io; // Socket.io handle
 var http; // Http handle
@@ -81,7 +80,7 @@ function StartRound(roomid) {
             Rooms[roomid].users[i].coord = StartCoords[1];
 
         Rooms[roomid].users[i].iskill = 0;
-        Rooms[roomid].users[i].timer = 5000;
+        Rooms[roomid].users[i].timer = 0;
         Rooms[roomid].users[i].rotation = 0;
     }
     Rooms[roomid].blinround = Rooms[roomid].blteam;
@@ -96,11 +95,12 @@ function AddNewUser(data) {
         userServerId: Rooms[data.roomid].userCounter
     };
 
-    Rooms[data.roomid].users[Rooms[data.roomid].userCounter] = {
+    Rooms[data.roomid].users[send.userServerId] = {
         userid: data.userid,
         userServerId: Rooms[data.roomid].userCounter,
         roomid: data.roomid
     };
+
     Rooms[data.roomid].userCounter++;
     return send;
 }
@@ -139,7 +139,6 @@ function ConnectUser() {
 
             if (Rooms[data.roomid].userCounter == 0) {
                 delete Rooms[data.roomid];
-                return;
             }
             else {
                 delete Rooms[data.roomid].users[data.userServerId];
@@ -150,10 +149,10 @@ function ConnectUser() {
 
         // Crate new room callback
         socket.on('NewRoom', function (data) {
-            var RoomId = utils.getRandom(1, 3000);
+            var RoomId = utils.getRandom(1, 1490);
 
             while (Rooms[RoomId] != undefined)
-                RoomId = utils.getRandom(1, 3000);
+                RoomId = utils.getRandom(1, 1490);
 
             Rooms[RoomId] = {
                 id: RoomId,
@@ -176,21 +175,23 @@ function ConnectUser() {
                 return;
             }
 
-            for (var i = 0; i < Rooms[data.roomid].userCounter; i++)
-                if (Rooms[data.roomid].users[i].userid == data.userid) {
-                    socket.emit('Err', 3);
-                    return;
-                }
-            send = AddNewUser(data);
-
             if (Rooms[data.roomid].userCounter >= 10) {
                 socket.emit('Err', 0);
                 return;
             }
 
+            for (var i = 0; i < Rooms[data.roomid].userCounter; i++)
+                if (Rooms[data.roomid].users[i].userid == data.userid) {
+                    socket.emit('Err', 3);
+                    return;
+                }
+
+
+            send = AddNewUser(data);
+
             socket.join(data.roomid);
 
-            send.users = Rooms[data.roomid].users;
+            send.users = Rooms[send.roomid].users;
 
             socket.emit('BackNewRoomUser', send);
         });
@@ -230,19 +231,24 @@ function ConnectUser() {
             Rooms[data.roomid].recount = 0;
             Rooms[data.roomid].rounds = 0;
             Rooms[data.roomid].connectedUsers = 0;
+            Rooms[data.roomid].newrounddelta = new Date().getTime();
             io.sockets.in(data.roomid).emit('BackStartGame', true);
 
         });
 
         // Init game handle
         socket.on('InitGame', function (data) {
+
             if (Rooms[data.roomid] == undefined)
                 return;
             if (Rooms[data.roomid].users[data.userServerId] == undefined)
                 return;
+
             socket.join(data.roomid);
+
             Rooms[data.roomid].connectedUsers++;
-            if (Rooms[data.roomid].userCounter == Rooms[data.roomid].connectedUsers)
+
+            if (Rooms[data.roomid].connectedUsers >= Rooms[data.roomid].userCounter)
                 io.sockets.in(data.roomid).emit('BackInitGame', Rooms[data.roomid].users);
         });
 
@@ -250,8 +256,10 @@ function ConnectUser() {
         socket.on('Game', function (data) {
             if (Rooms[data.roomid] == undefined)
                 return;
+            
             if (Rooms[data.roomid].users[data.userServerId] == undefined)
                 return;
+
             if (Rooms[data.roomid].users[data.userServerId].iskill == 1) {
                 socket.emit('Err', 5);
                 return;
@@ -261,6 +269,7 @@ function ConnectUser() {
                 io.sockets.in(data.roomid).emit('GG', Rooms[data.roomid]);
                 return;
             }
+
             Rooms[data.roomid].users[data.userServerId].coord = data.coord;
             Rooms[data.roomid].users[data.userServerId].rotation = data.rotation;
             io.sockets.in(data.roomid).emit('BackGame', Rooms[data.roomid].users);
@@ -270,9 +279,11 @@ function ConnectUser() {
         socket.on('Shoot', function (data) {
             var user = DetectCollision(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
                 data.coord.y, data.coord.y + 150 * Math.cos(data.rotation), data.roomid, data.userServerId);
+            var date = new Date().getTime();
 
             if (user != -1 &&
-                new Date().getTime() - Rooms[data.roomid].users[data.userServerId].timer >= 3000 &&
+                date - Rooms[data.roomid].users[data.userServerId].timer >= 5000 &&
+                date - Rooms[data.roomid].newrounddelta >= 5000 &&
                 Rooms[data.roomid].users[data.userServerId].iskill == 0) {
 
                 io.sockets.in(data.roomid).emit('BackShoot', user.userid);
@@ -288,6 +299,7 @@ function ConnectUser() {
                     io.sockets.in(data.roomid).emit("EndRound");
                     StartRound(data.roomid);
                     utils.sleep(5000);
+                    Rooms[data.roomid].newrounddelta = new Date().getTime();
                     io.sockets.in(data.roomid).emit("StartNewRound", Rooms[data.roomid]);
                 }
                 else if (Rooms[data.roomid].reinround == 0) {
@@ -295,6 +307,7 @@ function ConnectUser() {
                     Rooms[data.roomid].blcount++;
                     StartRound(data.roomid);
                     utils.sleep(5000);
+                    Rooms[data.roomid].newrounddelta = new Date().getTime();
                     io.sockets.in(data.roomid).emit("StartNewRound", Rooms[data.roomid]);
                 }
 
@@ -302,8 +315,10 @@ function ConnectUser() {
                     io.sockets.in(data.roomid).emit('GG', Rooms[data.roomid]);
                     return;
                 }
-                Rooms[data.roomid].users[data.userServerId].timer = new Date().getTime();
+
             }
+
+            Rooms[data.roomid].users[data.userServerId].timer = new Date().getTime();
         });
     });
 }
