@@ -144,7 +144,10 @@ function ConnectUser() {
             }
             else {
                 delete Rooms[data.roomid].users[data.userServerId];
-                io.sockets.in(data.roomid).emit('BackDiscoLobby', {users: Rooms[data.roomid].users, lenght: Rooms[data.roomid].userCounter});
+                io.sockets.in(data.roomid).emit('BackDiscoLobby', {
+                    users: Rooms[data.roomid].users,
+                    lenght: Rooms[data.roomid].userCounter
+                });
             }
         });
 
@@ -168,6 +171,7 @@ function ConnectUser() {
             if (data == true) {
                 FindRoomArry[FindRoomCount] = RoomId;
                 Rooms[RoomId].findnum = FindRoomCount;
+                Rooms[RoomId].findlivetime = new Date().getTime();
                 FindRoomCount++;
             }
 
@@ -181,10 +185,14 @@ function ConnectUser() {
                     continue;
                 if (Rooms[FindRoomArry[i]].userCounter >= 10)
                     continue;
-                else if (Rooms[FindRoomArry[i]].userCounter == 0)
+                else if (Rooms[FindRoomArry[i]].userCounter == 0) {
+                    delete FindRoomArry[Rooms[data.roomid].findnum];
+                    Rooms[data.roomid].findble = false;
                     continue;
-                else
-                {
+                }
+                else if (new Date().getTime() - Rooms[FindRoomArry[i]].findlivetime > 90000)
+                    continue;
+                else {
                     socket.emit('BackNewRoomId', FindRoomArry[i]);
                     return;
                 }
@@ -334,7 +342,7 @@ function ConnectUser() {
         // Shoot handle
         socket.on('Shoot', function (data) {
             var date = new Date().getTime();
-            if (date - Rooms[data.roomid].users[data.userServerId].timer >= 3000 &&
+            if (date - Rooms[data.roomid].users[data.userServerId].timer >= 500 &&
                 date - Rooms[data.roomid].newrounddelta >= 5000 &&
                 Rooms[data.roomid].users[data.userServerId].iskill == 0) {
                 var user = DetectCollision(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),
