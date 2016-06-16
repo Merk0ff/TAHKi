@@ -158,7 +158,7 @@ function ConnectUser() {
 
             Rooms[RoomId] = {
                 id: RoomId,
-                findble: data.findble,
+                findble: data,
                 userCounter: 0,
                 users: undefined,
                 blteam: 0,
@@ -166,7 +166,7 @@ function ConnectUser() {
             };
             Rooms[RoomId].users = [];
 
-            if (data.findble == true) {
+            if (data == true) {
                 FindRoomArry[FindRoomCount] = RoomId;
                 Rooms[RoomId].findnum = FindRoomCount;
                 FindRoomCount++;
@@ -177,16 +177,17 @@ function ConnectUser() {
 
         // Find room callback
         socket.on('FindRoom', function (data) {
-            if (FindRoomCount < 1)
-                socket.emit('Err', 9);
             for (var i = 0; i < FindRoomCount; i++){
                 if (Rooms[FindRoomArry[i]] == undefined)
                     continue;
                 if (Rooms[FindRoomArry[i]].userCounter >= 10)
                     continue;
-                else
-                    socket.emit('BackFindRoom', FindRoomArry[i]);
+                else {
+                    socket.emit('BackNewRoomId', FindRoomArry[i]);
+                    return;
+                }
             }
+            socket.emit('Err', 9);
         });
 
         // Join room callback

@@ -42,9 +42,13 @@
                 JoinRoom($("#Nick").val(), $("#RoomId").val());
             });
 
+            $("#btn_find_room").click(function () {
+                FindRoom();
+            });
+
             $("#CreateRoom").click(function () {
                 $("#Nick").attr("readonly", "readonly");
-                CreateRoom();
+                CreateRoom($("#findable").attr("checked") == "checked");
             });
 
             $("#btn_JoinBlue").click(function () {
@@ -72,8 +76,13 @@
                             <p>Enter your nickname:</p>
                             <input type="text" id="Nick"><br>
                             <p>Create room or join</p>
-                            <input type="button" class="button" id="CreateRoom" value="Create room">
+                            <form>
+                                <input type="checkbox" name="checkboxG1" id="findable" class="css-checkbox" />
+                                <label for="findable" class="css-label">Findable</label>
+                                <input type="button" class="button" value="Create room" id="CreateRoom">
+                            </form>
                             <input type="button" class="button" value="Join room" id="btn_join_show">
+                            <input type="button" class="button" value="Find Room" id="btn_find_room">
                         </div>
                     </td>
                 </tr>

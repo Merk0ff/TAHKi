@@ -69,8 +69,13 @@ function GetData() {
     });
 }
 
-function CreateRoom() {
-    socket.emit('NewRoom', data);
+function CreateRoom(findable) {
+    socket.emit('NewRoom', findable);
+}
+
+function FindRoom()
+{
+    socket.emit("FindRoom", {});
 }
 
 function StartGame() {

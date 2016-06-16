@@ -18,6 +18,8 @@ function GetErrorExeption(code) {
             return "Only lobby leader can start game.";
         case 8:
             return "Your nickname incorrect";
+        case 9:
+            return "No rooms avaible";
     }
 }
 function InitErrors() {
