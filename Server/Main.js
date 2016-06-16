@@ -144,7 +144,10 @@ function ConnectUser() {
             }
             else {
                 delete Rooms[data.roomid].users[data.userServerId];
-                io.sockets.in(data.roomid).emit('BackDiscoLobby', {users: Rooms[data.roomid].users, lenght: Rooms[data.roomid].userCounter});
+                io.sockets.in(data.roomid).emit('BackDiscoLobby', {
+                    users: Rooms[data.roomid].users,
+                    lenght: Rooms[data.roomid].userCounter
+                });
             }
         });
 
@@ -168,6 +171,7 @@ function ConnectUser() {
             if (data == true) {
                 FindRoomArry[FindRoomCount] = RoomId;
                 Rooms[RoomId].findnum = FindRoomCount;
+                Rooms[RoomId].findlivetime = new Date().getTime();
                 FindRoomCount++;
             }
 
@@ -183,8 +187,9 @@ function ConnectUser() {
                     continue;
                 else if (Rooms[FindRoomArry[i]].userCounter == 0)
                     continue;
-                else
-                {
+                else if (new Date().getTime() - Rooms[FindRoomArry[i]].findlivetime > 30000)
+                    continue;
+                else {
                     socket.emit('BackNewRoomId', FindRoomArry[i]);
                     return;
                 }
