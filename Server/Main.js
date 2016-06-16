@@ -9,6 +9,7 @@ var io; // Socket.io handle
 var http; // Http handle
 
 var Rooms = []; // Arry of rooms
+var FindRoomArry = [], FindRoomCount = 0; // Arry of findble rooms
 
 var cmap_mirage;
 var cmap_mirage_w;
@@ -138,6 +139,7 @@ function ConnectUser() {
             io.sockets.in(data.roomid).emit('BackDiscoGame', data.userid);
 
             if (Rooms[data.roomid].userCounter == 0) {
+                delete FindRoomArry[Rooms[data.roomid].findnum];
                 delete Rooms[data.roomid];
             }
             else {
@@ -156,6 +158,7 @@ function ConnectUser() {
 
             Rooms[RoomId] = {
                 id: RoomId,
+                findble: data.findble,
                 userCounter: 0,
                 users: undefined,
                 blteam: 0,
@@ -163,7 +166,27 @@ function ConnectUser() {
             };
             Rooms[RoomId].users = [];
 
+            if (data.findble == true) {
+                FindRoomArry[FindRoomCount] = RoomId;
+                Rooms[RoomId].findnum = FindRoomCount;
+                FindRoomCount++;
+            }
+
             socket.emit('BackNewRoomId', RoomId);
+        });
+
+        // Find room callback
+        socket.on('FindRoom', function (data) {
+            if (FindRoomCount < 1)
+                socket.emit('Err', 9);
+            for (var i = 0; i < FindRoomCount; i++){
+                if (Rooms[FindRoomArry[i]] == undefined)
+                    continue;
+                if (Rooms[FindRoomArry[i]].userCounter >= 10)
+                    continue;
+                else
+                    socket.emit('BackFindRoom', FindRoomArry[i]);
+            }
         });
 
         // Join room callback
@@ -172,6 +195,11 @@ function ConnectUser() {
 
             if (Rooms[data.roomid] == undefined) {
                 socket.emit('Err', 4);
+                return;
+            }
+
+            if (data.userid == ""){
+                socket.emit('Err', 8);
                 return;
             }
 
@@ -203,7 +231,6 @@ function ConnectUser() {
                 return;
             }
 
-
             if (Rooms[data.roomid].reteam >= 5 || Rooms[data.roomid].blteam >= 5) {
                 socket.emit('Err', 1);
                 return;
@@ -222,8 +249,18 @@ function ConnectUser() {
         // Start game handle
         socket.on('StartGame', function (data) {
             if (!(Rooms[data.roomid].reteam > 0 && Rooms[data.roomid].blteam > 0)) {
-                io.sockets.in(data.roomid).emit('Err', 6);
+                socket.emit('Err', 6);
                 return;
+            }
+
+            if (Rooms[data.roomid].users[data.userServerId].userServerId != 0){
+                socket.emit('Err', 7);
+                return;
+            }
+
+            if (Rooms[data.roomid].findble == true){
+                delete FindRoomArry[Rooms[data.roomid].findnum];
+                Rooms[data.roomid].findble = false;
             }
 
             StartRound(data.roomid);
@@ -354,6 +391,9 @@ function Serverhandler() {
         utils.SendFile(res, '/game.html');
     });
 
+    app.get('/robots.txt', function (req, res) {
+        utils.SendFile(res, '/robots.txt');
+    });
 }
 
 function SetUpServer() {
@@ -366,8 +406,8 @@ function SetUpServer() {
     Serverhandler();
     app.use(exp.static('../client'));
 
-    http.listen(80, function () {
-        console.log('listening on *:80');
+    http.listen(3000, function () {
+        console.log('listening on *:3000(80)');
     });
 }
 

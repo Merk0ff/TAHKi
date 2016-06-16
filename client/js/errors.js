@@ -14,6 +14,10 @@ function GetErrorExeption(code) {
             return "You died.";
         case 6:
             return "It's not enough players to start.";
+        case 7:
+            return "Only lobby leader can start game.";
+        case 8:
+            return "Your nickname incorrect";
     }
 }
 function InitErrors() {
