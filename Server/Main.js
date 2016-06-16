@@ -144,8 +144,7 @@ function ConnectUser() {
             }
             else {
                 delete Rooms[data.roomid].users[data.userServerId];
-                Rooms[data.roomid].users.length--;
-                io.sockets.in(data.roomid).emit('BackDiscoLobby', Rooms[data.roomid].users);
+                io.sockets.in(data.roomid).emit('BackDiscoLobby', {users: Rooms[data.roomid].users, lenght: Rooms[data.roomid].userCounter});
             }
         });
 
@@ -177,12 +176,15 @@ function ConnectUser() {
 
         // Find room callback
         socket.on('FindRoom', function (data) {
-            for (var i = 0; i < FindRoomCount; i++){
+            for (var i = 0; i < FindRoomCount; i++) {
                 if (Rooms[FindRoomArry[i]] == undefined)
                     continue;
                 if (Rooms[FindRoomArry[i]].userCounter >= 10)
                     continue;
-                else {
+                else if (Rooms[FindRoomArry[i]].userCounter == 0)
+                    continue;
+                else
+                {
                     socket.emit('BackNewRoomId', FindRoomArry[i]);
                     return;
                 }
@@ -199,7 +201,7 @@ function ConnectUser() {
                 return;
             }
 
-            if (data.userid == ""){
+            if (data.userid == "") {
                 socket.emit('Err', 8);
                 return;
             }
@@ -254,12 +256,12 @@ function ConnectUser() {
                 return;
             }
 
-            if (Rooms[data.roomid].users[data.userServerId].userServerId != 0){
+            if (Rooms[data.roomid].users[data.userServerId].userServerId != 0) {
                 socket.emit('Err', 7);
                 return;
             }
 
-            if (Rooms[data.roomid].findble == true){
+            if (Rooms[data.roomid].findble == true) {
                 delete FindRoomArry[Rooms[data.roomid].findnum];
                 Rooms[data.roomid].findble = false;
             }
@@ -279,6 +281,10 @@ function ConnectUser() {
             io.sockets.in(data.roomid).emit('BackStartGame', true);
 
         });
+
+        /***
+         * Game handle
+         ***/
 
         // Init game handle
         socket.on('InitGame', function (data) {

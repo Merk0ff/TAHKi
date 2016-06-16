@@ -21,12 +21,12 @@ function GetData() {
         index_red++;
 
         for (var i = 0; i < backdata.length; i++) {
-            if (backdata[i].team == 0) {
-                $("#red_" + index_red).text(backdata[i].userid);
+            if (backdata.users[i].team == 0) {
+                $("#red_" + index_red).text(backdata.users[i].userid);
                 index_red++;
             }
-            else if (backdata[i].team == 1) {
-                $("#blue_" + index_blue).text(backdata[i].userid);
+            else if (backdata.users[i].team == 1) {
+                $("#blue_" + index_blue).text(backdata.users[i].userid);
                 index_blue++;
             }
         }
