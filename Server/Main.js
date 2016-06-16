@@ -175,6 +175,11 @@ function ConnectUser() {
                 return;
             }
 
+            if (data.userid == ""){
+                socket.emit('Err', 8);
+                return;
+            }
+
             if (Rooms[data.roomid].userCounter >= 10) {
                 socket.emit('Err', 0);
                 return;
@@ -203,7 +208,6 @@ function ConnectUser() {
                 return;
             }
 
-
             if (Rooms[data.roomid].reteam >= 5 || Rooms[data.roomid].blteam >= 5) {
                 socket.emit('Err', 1);
                 return;
@@ -222,7 +226,12 @@ function ConnectUser() {
         // Start game handle
         socket.on('StartGame', function (data) {
             if (!(Rooms[data.roomid].reteam > 0 && Rooms[data.roomid].blteam > 0)) {
-                io.sockets.in(data.roomid).emit('Err', 6);
+                socket.emit('Err', 6);
+                return;
+            }
+
+            if (Rooms[data.roomid].users[data.userServerId].userServerId != 0){
+                socket.emit('Err', 7);
                 return;
             }
 
@@ -366,8 +375,8 @@ function SetUpServer() {
     Serverhandler();
     app.use(exp.static('../client'));
 
-    http.listen(80, function () {
-        console.log('listening on *:80');
+    http.listen(3000, function () {
+        console.log('listening on *:3000(80)');
     });
 }
 
