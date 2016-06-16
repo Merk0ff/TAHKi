@@ -48,7 +48,7 @@
 
             $("#CreateRoom").click(function () {
                 $("#Nick").attr("readonly", "readonly");
-                CreateRoom($("#findable").attr("checked") == "checked");
+                CreateRoom($("#findable").is(":checked"));
             });
 
             $("#btn_JoinBlue").click(function () {
