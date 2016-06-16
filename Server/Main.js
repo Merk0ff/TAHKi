@@ -334,7 +334,7 @@ function ConnectUser() {
         // Shoot handle
         socket.on('Shoot', function (data) {
             var date = new Date().getTime();
-            if (date - Rooms[data.roomid].users[data.userServerId].timer >= 3000 &&
+            if (date - Rooms[data.roomid].users[data.userServerId].timer >= 500 &&
                 date - Rooms[data.roomid].newrounddelta >= 5000 &&
                 Rooms[data.roomid].users[data.userServerId].iskill == 0) {
                 var user = DetectCollision(data.coord.x, data.coord.x + 150 * Math.sin(data.rotation),

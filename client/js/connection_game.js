@@ -83,7 +83,7 @@ function ConnectionInit() {
     socket.on("BackShoot", function (data) {
         if (gameEnded)
             return;
-        AddParticle(players[data.killer].Model.position.clone(), players[data.killer].Look.clone(), 3);
+        players[data.killer].Shoot();
         if (data.killed == -1)
             return;
         var killer_team = players[data.killer].team;

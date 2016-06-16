@@ -1,6 +1,7 @@
 var scene; // Threejs scene
 var camera; // Threejs camera
 var renderer; // Threejs renderer
+var soundRenderer; // Sound renderer
 var terrain; // Map model
 var light_dir1; // Threejs global direction lightning
 var light_dir2; // Threejs global direction lightning
@@ -161,6 +162,9 @@ function Init() {
     document.body.appendChild(stats.dom);
     document.body.style.cursor = 'default';
     scene = new THREE.Scene();
+
+    SoundInit("./resources/sounds/space_laser_shot.mp3");
+    
     camera = new THREE.PerspectiveCamera(FOV, window.innerWidth / window.innerHeight, 0.1, 10000);
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(1, 255);

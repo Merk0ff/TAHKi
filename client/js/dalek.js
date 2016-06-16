@@ -28,6 +28,13 @@ Dalek.prototype.SetPosition = function (new_position) {
     this.Model.position.z = new_position.y;
 };
 
+Dalek.prototype.Shoot = function ()
+{
+    AddParticle(this.Model.position.clone(), this.Look.clone(), 3);
+    this.Model.updateMatrixWorld();
+    Sound(this.Model.matrixWorld);
+};
+
 Dalek.prototype.Destroy = function () {
     scene.remove(this.Model);
 };
