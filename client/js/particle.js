@@ -32,9 +32,9 @@ function Particle(type, position, look, lifetime) {
     });
     for (var i = 0; i < this.particleCount; i++) {
         this.directions.push(VecSet3(
-            look.x * 2,// + Math.random() - 0.5,
-            look.y * 2,// + Math.random() - 0.5,
-            look.z * 2// + Math.random() - 0.5
+            look.x * 5,// + Math.random() - 0.5,
+            look.y * 5,// + Math.random() - 0.5,
+            look.z * 5// + Math.random() - 0.5
         ));
         var particle = new THREE.Vector3(
             position.x + look.x * (i / 3 + 5),// + Math.random() * 0.05 - 0.025,
