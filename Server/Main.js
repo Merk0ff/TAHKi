@@ -363,6 +363,9 @@ function Serverhandler() {
         utils.SendFile(res, '/game.html');
     });
 
+    app.get('/robots.txt', function (req, res) {
+        utils.SendFile(res, '/robots.txt');
+    });
 }
 
 function SetUpServer() {
