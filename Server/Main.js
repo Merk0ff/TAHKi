@@ -190,7 +190,7 @@ function ConnectUser() {
                     Rooms[data.roomid].findble = false;
                     continue;
                 }
-                else if (new Date().getTime() - Rooms[FindRoomArry[i]].findlivetime > 60000)
+                else if (new Date().getTime() - Rooms[FindRoomArry[i]].findlivetime > 90000)
                     continue;
                 else {
                     socket.emit('BackNewRoomId', FindRoomArry[i]);
