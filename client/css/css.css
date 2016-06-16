@@ -34,11 +34,12 @@ body {
 
 li {
     margin: 1px;
-    border: 1px solid #cc1488;
-    text-shadow: #cc1488 1px 1px 0, #cc1488 2px 2px 0,
-    #cc1488 3px 3px 0, #cc1488 4px 4px 0,
-    #cc1488 5px 5px 0;
+    border: 1px solid #cc1337;
+    text-shadow: #cc1337 1px 1px 0, #cc1337 2px 2px 0,
+    #cc1337 3px 3px 0, #cc1337 4px 4px 0,
+    #cc1337 5px 5px 0;
 }
+
 
 .team_blue {
     border-color: blue;
@@ -142,6 +143,14 @@ li {
     padding: 5px 15px;
 }
 
+.chat_unit{
+    background-color: black;
+    opacity: 0.5;
+    margin: 10px;
+    font-size: 20px;
+    width: 100%;
+}
+
 .button {
     background-color: yellow;
     border-radius: 12px;
@@ -188,4 +197,12 @@ li {
     height: 60%;
     top: 20%;
     left: 20%;
+}
+
+#chat{
+    list-style-type: none;
+    position: absolute;
+    width: 40%;
+    left: 60%;
+    top: 0;
 }

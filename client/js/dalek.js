@@ -1,5 +1,6 @@
 /* Constructor of 'Dalek' */
 function Dalek(type) {
+    this.team = type;
     this.Speed = 1.0;
     this.Look = new THREE.Vector3(0, 0, this.Speed);
     this.RelativeCam = new THREE.Vector3(0, 0, 0);

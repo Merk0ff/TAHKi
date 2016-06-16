@@ -67,8 +67,7 @@ function ConnectionInit() {
         RemovePlayer(data);
     });
     socket.on("EndRound", function (data) {
-        clearInterval(timerConnection);
-        clearInterval(timerPlayer);
+
     });
     socket.on("GG", function (data) {
         gameEnded = true;
@@ -87,25 +86,27 @@ function ConnectionInit() {
         AddParticle(players[data.killer].Model.position.clone(), players[data.killer].Look.clone(), 3);
         if (data.killed == -1)
             return;
-        console.log(data.killer + " ̵͇̿̿/̿'̿ ̿  " + data.killed);
+        var killer_team = players[data.killer].team;
+        var killed_team = players[data.killed].team;
+
+        $("#chat").append("<li class=\'chat_unit\'><span class=\'team_" + killer_team +"\'>" + data.killer + "</span>&nbsp;&nbsp;̵͇̿̿/̿'̿ ̿ &nbsp;&nbsp;<span class=\'team_" + killed_team +"\'>" + data.killed + "</span></li>");
+        //attr("class", "chat_unit");
+        //console.log(data.killer + " ̵͇̿̿/̿'̿ ̿  " + data.killed);
         if (data.killed == mydata.userid) {
             $("#splash_text").text("You died");
             $("#fullscreen").fadeIn("slow");
-            clearInterval(timerConnection);
-            clearInterval(timerPlayer);
         }
         HidePlayer(data.killed);
     });
     socket.on("StartNewRound", function (data) {
         if (gameEnded)
             return;
+        $("#chat").empty();
         for (var i = 0; i < data.users.length; i++) {
             ShowPlayer(data.users[i].userid);
             players[data.users[i].userid].SetPosition(data.users[i].coord);
             players[data.users[i].userid].SetRotate(data.users[i].rotation);
         }
-        timerConnection = setInterval(Update, 20);
-        timerPlayer = setInterval(UpdateKeyboard, 20);
         players[mydata.userid].SetCamera();
         if (gameEnded)
             return;
@@ -157,6 +158,7 @@ function ConnectionInit() {
 }
 
 function Response() {
+    UpdatePatricles();
     mydata.coord = players[mydata.userid].GetPosition();
     mydata.rotation = players[mydata.userid].Model.rotation.y;
     socket.emit("Game", mydata);

@@ -9,6 +9,8 @@ var KEY_CODE = {
     UP: 87,
     RIGHT: 68,
     DOWN: 83,
+    Q: 81,
+    E: 69,
     PLUS: 107,
     M: 109,
     L: 108,

@@ -31,11 +31,19 @@ function UpdateKeyboard() {
         players[mydata.userid].SetCamera();
     }
     if (Keys[KEY_CODE.RIGHT]) {
-        players[mydata.userid].Rotate(-0.030);
+        players[mydata.userid].Rotate(-0.05);
         players[mydata.userid].SetCamera();
     }
     if (Keys[KEY_CODE.LEFT]) {
-        players[mydata.userid].Rotate(0.030);
+        players[mydata.userid].Rotate(0.05);
+        players[mydata.userid].SetCamera();
+    }
+    if (Keys[KEY_CODE.E]) {
+        players[mydata.userid].Rotate(-0.03);
+        players[mydata.userid].SetCamera();
+    }
+    if (Keys[KEY_CODE.Q]) {
+        players[mydata.userid].Rotate(0.03);
         players[mydata.userid].SetCamera();
     }
 }
@@ -43,5 +51,4 @@ function Update() {
     //console.log("upd");
     //players[mydata.userid].Update();
     Response();
-    UpdatePatricles();
 }

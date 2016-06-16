@@ -268,7 +268,7 @@ function ConnectUser() {
                 return;
 
             if (Rooms[data.roomid].users[data.userServerId].iskill == 1) {
-                socket.emit('Err', 5);
+                //socket.emit('Err', 5);
                 return;
             }
 
