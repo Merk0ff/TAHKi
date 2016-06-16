@@ -185,9 +185,12 @@ function ConnectUser() {
                     continue;
                 if (Rooms[FindRoomArry[i]].userCounter >= 10)
                     continue;
-                else if (Rooms[FindRoomArry[i]].userCounter == 0)
+                else if (Rooms[FindRoomArry[i]].userCounter == 0) {
+                    delete FindRoomArry[Rooms[data.roomid].findnum];
+                    Rooms[data.roomid].findble = false;
                     continue;
-                else if (new Date().getTime() - Rooms[FindRoomArry[i]].findlivetime > 30000)
+                }
+                else if (new Date().getTime() - Rooms[FindRoomArry[i]].findlivetime > 60000)
                     continue;
                 else {
                     socket.emit('BackNewRoomId', FindRoomArry[i]);
